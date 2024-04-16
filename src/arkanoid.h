@@ -5,6 +5,7 @@
 
 struct ArkanoidSettings
 {
+public:
     static constexpr int bricks_columns_min = 10;
     static constexpr int bricks_columns_max = 30;
     static constexpr int bricks_rows_min = 3;
