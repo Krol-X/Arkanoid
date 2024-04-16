@@ -17,23 +17,23 @@ static void glfw_error_callback(int error, const char* description)
 
 Game::Game()
 {
-	this->init_ok = false;
+	init_ok = false;
 
-	if (!this->initGlfw())
+	if (!initGlfw())
 		return;
-	this->initImGui();
+	initImGui();
 
-	this->arkanoid = create_arkanoid();
-	this->arkanoid->reset(this->arkanoid_settings);
+	arkanoid = create_arkanoid();
+	arkanoid->reset(arkanoid_settings);
 
-	this->init_ok = true;
+	init_ok = true;
 }
 
 
 
 bool Game::isInitOk()
 {
-	return this->init_ok;
+	return init_ok;
 }
 
 
@@ -41,12 +41,12 @@ bool Game::isInitOk()
 Game::~Game()
 {
 	// fixit
-	if (this->isInitOk()) {
+	if (isInitOk()) {
 		ImGui_ImplOpenGL3_Shutdown();
 		ImGui_ImplGlfw_Shutdown();
 		ImGui::DestroyContext();
 
-		glfwDestroyWindow(this->window);
+		glfwDestroyWindow(window);
 		glfwTerminate();
 	}
 }
@@ -59,7 +59,7 @@ void Game::Run()
 
 	// Main loop
 	double last_time = glfwGetTime();
-	while (!glfwWindowShouldClose(this->window))
+	while (!glfwWindowShouldClose(window))
 	{
 		// Poll and handle events (inputs, window resize, etc.)
 		// You can read the io.WantCaptureMouse, io.WantCaptureKeyboard flags to tell if dear imgui wants to use your inputs.
@@ -78,7 +78,7 @@ void Game::Run()
 		float elapsed_time = static_cast<float>(std::min(cur_time - last_time, 1.0));
 		last_time = cur_time;
 
-		this->do_arkanoid_update = true;
+		do_arkanoid_update = true;
 
 		renderSettingsWindow();
 		renderDebugWindow();
@@ -92,13 +92,13 @@ void Game::Run()
 		// Rendering
 		ImGui::Render();
 		int display_w, display_h;
-		glfwGetFramebufferSize(this->window, &display_w, &display_h);
+		glfwGetFramebufferSize(window, &display_w, &display_h);
 		glViewport(0, 0, display_w, display_h);
 		glClearColor(clear_color.x * clear_color.w, clear_color.y * clear_color.w, clear_color.z * clear_color.w, clear_color.w);
 		glClear(GL_COLOR_BUFFER_BIT);
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
-		glfwSwapBuffers(this->window);
+		glfwSwapBuffers(window);
 	}
 }
 
@@ -117,26 +117,26 @@ bool Game::initGlfw()
 	// Decide GL+GLSL versions
 #ifdef __APPLE__
 	// GL 3.2 + GLSL 150
-	this->glsl_version = "#version 150";
+	glsl_version = "#version 150";
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);  // 3.2+ only
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);            // Required on Mac
 #else
 	// GL 3.0 + GLSL 130
-	this->glsl_version = "#version 130";
+	glsl_version = "#version 130";
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
 #endif
 
 	// Create window with graphics context
-	this->window = glfwCreateWindow(960, 540, "My Arkanoid", NULL, NULL);
-	if (this->window == NULL) {
+	window = glfwCreateWindow(960, 540, "My Arkanoid", NULL, NULL);
+	if (window == NULL) {
 		fprintf(stderr, "Failed to create window!\n");
 		return false;
 	}
 
-	glfwMakeContextCurrent(this->window);
+	glfwMakeContextCurrent(window);
 	glfwSwapInterval(1); // Enable vsync
 
 	if (!gladLoadGL(glfwGetProcAddress))
@@ -154,14 +154,14 @@ void Game::initImGui()
 	// Setup Dear ImGui context
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
-	this->io = &ImGui::GetIO();
+	io = &ImGui::GetIO();
 
 	// Setup Dear ImGui style
 	ImGui::StyleColorsDark();
 
 	// Setup Platform/Renderer back-ends
-	ImGui_ImplGlfw_InitForOpenGL(this->window, true);
-	ImGui_ImplOpenGL3_Init(this->glsl_version);
+	ImGui_ImplGlfw_InitForOpenGL(window, true);
+	ImGui_ImplOpenGL3_Init(glsl_version);
 }
 
 
@@ -170,24 +170,24 @@ void Game::renderSettingsWindow()
 {
 	ImGui::Begin("Arkanoid");
 
-	ImGui::InputFloat2("World size", this->arkanoid_settings.world_size.data_);
+	ImGui::InputFloat2("World size", arkanoid_settings.world_size.data_);
 
 	ImGui::Spacing();
-	ImGui::SliderInt("Bricks columns", &this->arkanoid_settings.bricks_columns_count, ArkanoidSettings::bricks_columns_min, ArkanoidSettings::bricks_columns_max);
-	ImGui::SliderInt("Bricks rows", &this->arkanoid_settings.bricks_rows_count, ArkanoidSettings::bricks_rows_min, ArkanoidSettings::bricks_rows_max);
+	ImGui::SliderInt("Bricks columns", &arkanoid_settings.bricks_columns_count, ArkanoidSettings::bricks_columns_min, ArkanoidSettings::bricks_columns_max);
+	ImGui::SliderInt("Bricks rows", &arkanoid_settings.bricks_rows_count, ArkanoidSettings::bricks_rows_min, ArkanoidSettings::bricks_rows_max);
 
-	ImGui::SliderFloat("Bricks padding columns", &this->arkanoid_settings.bricks_columns_padding, ArkanoidSettings::bricks_columns_padding_min, ArkanoidSettings::bricks_columns_padding_max);
-	ImGui::SliderFloat("Bricks padding rows", &this->arkanoid_settings.bricks_rows_padding, ArkanoidSettings::bricks_rows_padding_min, ArkanoidSettings::bricks_rows_padding_max);
-
-	ImGui::Spacing();
-	ImGui::SliderFloat("Ball radius", &this->arkanoid_settings.ball_radius, ArkanoidSettings::ball_radius_min, ArkanoidSettings::ball_radius_max);
-	ImGui::SliderFloat("Ball speed", &this->arkanoid_settings.ball_speed, ArkanoidSettings::ball_speed_min, ArkanoidSettings::ball_speed_max);
+	ImGui::SliderFloat("Bricks padding columns", &arkanoid_settings.bricks_columns_padding, ArkanoidSettings::bricks_columns_padding_min, ArkanoidSettings::bricks_columns_padding_max);
+	ImGui::SliderFloat("Bricks padding rows", &arkanoid_settings.bricks_rows_padding, ArkanoidSettings::bricks_rows_padding_min, ArkanoidSettings::bricks_rows_padding_max);
 
 	ImGui::Spacing();
-	ImGui::SliderFloat("Carriage width", &this->arkanoid_settings.carriage_width, ArkanoidSettings::carriage_width_min, this->arkanoid_settings.world_size.x);
+	ImGui::SliderFloat("Ball radius", &arkanoid_settings.ball_radius, ArkanoidSettings::ball_radius_min, ArkanoidSettings::ball_radius_max);
+	ImGui::SliderFloat("Ball speed", &arkanoid_settings.ball_speed, ArkanoidSettings::ball_speed_min, ArkanoidSettings::ball_speed_max);
+
+	ImGui::Spacing();
+	ImGui::SliderFloat("Carriage width", &arkanoid_settings.carriage_width, ArkanoidSettings::carriage_width_min, arkanoid_settings.world_size.x);
 
 	if (ImGui::Button("Reset"))
-		this->arkanoid->reset(this->arkanoid_settings);
+		arkanoid->reset(arkanoid_settings);
 
 	ImGui::End();
 }
@@ -197,23 +197,23 @@ void Game::renderSettingsWindow()
 void Game::renderDebugWindow()
 {
 	ImGui::Begin("Arkanoid Debug");
-	ImGui::Checkbox("Debug draw", &this->arkanoid_settings.debug_draw);
+	ImGui::Checkbox("Debug draw", &arkanoid_settings.debug_draw);
 
-	if (this->arkanoid_settings.debug_draw)
+	if (arkanoid_settings.debug_draw)
 	{
-		ImGui::SliderFloat("Hit pos radius", &this->arkanoid_settings.debug_draw_pos_radius, 3.0f, 15.0f);
-		ImGui::SliderFloat("Hit normal length", &this->arkanoid_settings.debug_draw_normal_length, 10.0f, 100.0f);
-		ImGui::SliderFloat("Timeout", &this->arkanoid_settings.debug_draw_timeout, 0.1f, 10.0f);
+		ImGui::SliderFloat("Hit pos radius", &arkanoid_settings.debug_draw_pos_radius, 3.0f, 15.0f);
+		ImGui::SliderFloat("Hit normal length", &arkanoid_settings.debug_draw_normal_length, 10.0f, 100.0f);
+		ImGui::SliderFloat("Timeout", &arkanoid_settings.debug_draw_timeout, 0.1f, 10.0f);
 	}
 
 	ImGui::Spacing();
-	ImGui::Checkbox("Steps by step", &this->arkanoid_settings.step_by_step);
+	ImGui::Checkbox("Steps by step", &arkanoid_settings.step_by_step);
 
-	if (this->arkanoid_settings.step_by_step)
-		this->do_arkanoid_update = false;
+	if (arkanoid_settings.step_by_step)
+		do_arkanoid_update = false;
 
-	if (ImGui::Button("Next step (SPACE Key)") || this->io->KeysDown[GLFW_KEY_SPACE])
-		this->do_arkanoid_update = true;
+	if (ImGui::Button("Next step (SPACE Key)") || io->KeysDown[GLFW_KEY_SPACE])
+		do_arkanoid_update = true;
 
 	ImGui::End();
 }
@@ -222,9 +222,9 @@ void Game::renderDebugWindow()
 
 void Game::renderGame(ImDrawList* bg_drawlist, float elapsed_time)
 {
-	if (this->do_arkanoid_update)
+	if (do_arkanoid_update)
 	{
-		this->arkanoid->update(*this->io, arkanoid_debug_data, elapsed_time);
+		arkanoid->update(*io, arkanoid_debug_data, elapsed_time);
 
 		// update debug draw data time
 		size_t remove_by_timeout_count = 0;
@@ -246,7 +246,7 @@ void Game::renderGame(ImDrawList* bg_drawlist, float elapsed_time)
 		}
 	}
 
-	this->arkanoid->draw(*this->io, *bg_drawlist);
+	arkanoid->draw(*io, *bg_drawlist);
 }
 
 
