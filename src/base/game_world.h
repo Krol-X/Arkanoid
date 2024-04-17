@@ -5,12 +5,14 @@
 class GameWorld
 {
 private:
+	Vect size;
 	Vect coords_to_screen;
 
 public:
-	Vect size;
+	GameWorld(Vect size);
+	Vect getSize();
 
-	void update(ImGuiIO& io, float elapsed);
+	void update(ImGuiIO* io, float elapsed);
 	float toScreenCoords(float position);
 	Vect toScreenCoords(Vect position);
 };

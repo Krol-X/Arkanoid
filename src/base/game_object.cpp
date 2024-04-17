@@ -1,6 +1,6 @@
 #include "game_object.h"
 
-GameObject::GameObject(GameWorld& world)
+GameObject::GameObject(GameWorld* world)
 {
 	this->world = world;
 }

@@ -6,8 +6,6 @@
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
 
-
-
 static void glfw_error_callback(int error, const char* description)
 {
 	fprintf(stderr, "Glfw Error %d: %s\n", error, description);
@@ -17,31 +15,19 @@ static void glfw_error_callback(int error, const char* description)
 
 Game::Game()
 {
-	init_ok = false;
+	inited = false;
 
 	if (!initGlfw())
 		return;
 	initImGui();
+	initGame();
 
-	arkanoid = create_arkanoid();
-	arkanoid->reset(arkanoid_settings);
-
-	init_ok = true;
+	inited = true;
 }
-
-
-
-bool Game::isInitOk()
-{
-	return init_ok;
-}
-
-
 
 Game::~Game()
 {
-	// fixit
-	if (isInitOk()) {
+	if (inited) {
 		ImGui_ImplOpenGL3_Shutdown();
 		ImGui_ImplGlfw_Shutdown();
 		ImGui::DestroyContext();
@@ -51,43 +37,35 @@ Game::~Game()
 	}
 }
 
-
+bool Game::isInited()
+{
+	return inited;
+}
 
 void Game::Run()
 {
+	if (!inited)
+		return;
+
 	ImVec4 clear_color = ImVec4(0.05f, 0.075f, 0.1f, 1.00f);
 
-	// Main loop
 	double last_time = glfwGetTime();
 	while (!glfwWindowShouldClose(window))
 	{
-		// Poll and handle events (inputs, window resize, etc.)
-		// You can read the io.WantCaptureMouse, io.WantCaptureKeyboard flags to tell if dear imgui wants to use your inputs.
-		// - When io.WantCaptureMouse is true, do not dispatch mouse input data to your main application.
-		// - When io.WantCaptureKeyboard is true, do not dispatch keyboard input data to your main application.
-		// Generally you may always pass all inputs to dear imgui, and hide them from your application based on those two flags.
 		glfwPollEvents();
 
-		// Start the Dear ImGui frame
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 
 		ImGui::NewFrame();
 
 		double cur_time = glfwGetTime();
-		float elapsed_time = static_cast<float>(std::min(cur_time - last_time, 1.0));
+		render_elapsed_time = static_cast<float>(std::min(cur_time - last_time, 1.0));
 		last_time = cur_time;
 
-		do_arkanoid_update = true;
-
-		renderSettingsWindow();
-		renderDebugWindow();
-
+		update();
 		ImDrawList* bg_drawlist = ImGui::GetBackgroundDrawList();
-		renderGame(bg_drawlist, elapsed_time);
-		if (arkanoid_settings.debug_draw) {
-			renderDebug(bg_drawlist);
-		}
+		render(bg_drawlist);
 
 		// Rendering
 		ImGui::Render();
@@ -101,8 +79,6 @@ void Game::Run()
 		glfwSwapBuffers(window);
 	}
 }
-
-
 
 bool Game::initGlfw()
 {
@@ -147,8 +123,6 @@ bool Game::initGlfw()
 	return true;
 }
 
-
-
 void Game::initImGui()
 {
 	// Setup Dear ImGui context
@@ -164,99 +138,27 @@ void Game::initImGui()
 	ImGui_ImplOpenGL3_Init(glsl_version);
 }
 
-
-
-void Game::renderSettingsWindow()
+void Game::initGame()
 {
-	ImGui::Begin("Arkanoid");
+	world = new GameWorld(settings.world_size);
+	Vect world_size = world->getSize();
 
-	ImGui::InputFloat2("World size", arkanoid_settings.world_size.data_);
-
-	ImGui::Spacing();
-	ImGui::SliderInt("Bricks columns", &arkanoid_settings.bricks_columns_count, ArkanoidSettings::bricks_columns_min, ArkanoidSettings::bricks_columns_max);
-	ImGui::SliderInt("Bricks rows", &arkanoid_settings.bricks_rows_count, ArkanoidSettings::bricks_rows_min, ArkanoidSettings::bricks_rows_max);
-
-	ImGui::SliderFloat("Bricks padding columns", &arkanoid_settings.bricks_columns_padding, ArkanoidSettings::bricks_columns_padding_min, ArkanoidSettings::bricks_columns_padding_max);
-	ImGui::SliderFloat("Bricks padding rows", &arkanoid_settings.bricks_rows_padding, ArkanoidSettings::bricks_rows_padding_min, ArkanoidSettings::bricks_rows_padding_max);
-
-	ImGui::Spacing();
-	ImGui::SliderFloat("Ball radius", &arkanoid_settings.ball_radius, ArkanoidSettings::ball_radius_min, ArkanoidSettings::ball_radius_max);
-	ImGui::SliderFloat("Ball speed", &arkanoid_settings.ball_speed, ArkanoidSettings::ball_speed_min, ArkanoidSettings::ball_speed_max);
-
-	ImGui::Spacing();
-	ImGui::SliderFloat("Carriage width", &arkanoid_settings.carriage_width, ArkanoidSettings::carriage_width_min, arkanoid_settings.world_size.x);
-
-	if (ImGui::Button("Reset"))
-		arkanoid->reset(arkanoid_settings);
-
-	ImGui::End();
+	Vect ball_pos = Vect(world_size.x / 2, world_size.y / 2);
+	Vect ball_vel = Vect(200, 200);
+	ball = new Ball(world, ball_pos, settings.ball_radius, ball_vel);
+	paused = false;
 }
 
 
-
-void Game::renderDebugWindow()
+void Game::update()
 {
-	ImGui::Begin("Arkanoid Debug");
-	ImGui::Checkbox("Debug draw", &arkanoid_settings.debug_draw);
-
-	if (arkanoid_settings.debug_draw)
-	{
-		ImGui::SliderFloat("Hit pos radius", &arkanoid_settings.debug_draw_pos_radius, 3.0f, 15.0f);
-		ImGui::SliderFloat("Hit normal length", &arkanoid_settings.debug_draw_normal_length, 10.0f, 100.0f);
-		ImGui::SliderFloat("Timeout", &arkanoid_settings.debug_draw_timeout, 0.1f, 10.0f);
+	world->update(io, render_elapsed_time);
+	if (!paused) {
+		ball->update(io, render_elapsed_time);
 	}
-
-	ImGui::Spacing();
-	ImGui::Checkbox("Steps by step", &arkanoid_settings.step_by_step);
-
-	if (arkanoid_settings.step_by_step)
-		do_arkanoid_update = false;
-
-	if (ImGui::Button("Next step (SPACE Key)") || io->KeysDown[GLFW_KEY_SPACE])
-		do_arkanoid_update = true;
-
-	ImGui::End();
 }
 
-
-
-void Game::renderGame(ImDrawList* bg_drawlist, float elapsed_time)
+void Game::render(ImDrawList* draw_list)
 {
-	if (do_arkanoid_update)
-	{
-		arkanoid->update(*io, arkanoid_debug_data, elapsed_time);
-
-		// update debug draw data time
-		size_t remove_by_timeout_count = 0;
-		for (auto& hit : arkanoid_debug_data.hits)
-		{
-			hit.time += elapsed_time;
-			if (hit.time > arkanoid_settings.debug_draw_timeout)
-				remove_by_timeout_count++;
-		}
-
-		// cleat outdated debug info
-		if (remove_by_timeout_count > 0)
-		{
-			std::rotate(arkanoid_debug_data.hits.begin(),
-				arkanoid_debug_data.hits.begin() + remove_by_timeout_count,
-				arkanoid_debug_data.hits.end());
-
-			arkanoid_debug_data.hits.resize(arkanoid_debug_data.hits.size() - remove_by_timeout_count);
-		}
-	}
-
-	arkanoid->draw(*io, *bg_drawlist);
-}
-
-
-
-void Game::renderDebug(ImDrawList* bg_drawlist)
-{
-	const float len = arkanoid_settings.debug_draw_normal_length;
-	for (const auto& hit : arkanoid_debug_data.hits)
-	{
-		bg_drawlist->AddCircleFilled(hit.screen_pos, arkanoid_settings.debug_draw_pos_radius, ImColor(255, 255, 0));
-		bg_drawlist->AddLine(hit.screen_pos, hit.screen_pos + hit.normal * len, ImColor(255, 0, 0));
-	}
+	ball->draw(io, draw_list);
 }

@@ -7,11 +7,11 @@
 class GameObject
 {
 protected:
-	GameWorld& world;
-public:
+	GameWorld* world;
 	Vect position;
+public:
+	GameObject(GameWorld* world);
 
-	GameObject(GameWorld& world);
-	virtual void draw(ImGuiIO& io, ImDrawList& draw_list) = 0;
-	virtual void update(ImGuiIO& io, float elapsed) = 0;
+	virtual void update(ImGuiIO* io, float elapsed) = 0;
+	virtual void draw(ImGuiIO* io, ImDrawList* draw_list) = 0;
 };

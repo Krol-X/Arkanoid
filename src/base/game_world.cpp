@@ -1,16 +1,26 @@
 #include "game_world.h"
 
-void GameWorld::update(ImGuiIO& io, float elapsed)
+GameWorld::GameWorld(Vect size)
 {
-	world_to_screen = Vect(io.DisplaySize.x / size.x, io.DisplaySize.y / size.y);
+	this->size = size;
+}
+
+Vect GameWorld::getSize()
+{
+	return size;
+}
+
+void GameWorld::update(ImGuiIO* io, float elapsed)
+{
+	coords_to_screen = Vect(io->DisplaySize.x / size.x, io->DisplaySize.y / size.y);
 }
 
 float GameWorld::toScreenCoords(float position)
 {
-	return position * world_to_screen.x;
+	return position * coords_to_screen.x;
 }
 
 Vect GameWorld::toScreenCoords(Vect position)
 {
-	return position * world_to_screen;
+	return position * coords_to_screen;
 }
