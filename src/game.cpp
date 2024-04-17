@@ -37,7 +37,7 @@ Game::~Game()
 	}
 }
 
-bool Game::isInited()
+bool Game::isInited() const
 {
 	return inited;
 }
@@ -65,7 +65,7 @@ void Game::Run()
 
 		update();
 		ImDrawList* bg_drawlist = ImGui::GetBackgroundDrawList();
-		render(bg_drawlist);
+		render(*bg_drawlist);
 
 		// Rendering
 		ImGui::Render();
@@ -106,7 +106,7 @@ bool Game::initGlfw()
 #endif
 
 	// Create window with graphics context
-	window = glfwCreateWindow(960, 540, "My Arkanoid", NULL, NULL);
+	window = glfwCreateWindow(800, 600, "My Arkanoid", NULL, NULL);
 	if (window == NULL) {
 		fprintf(stderr, "Failed to create window!\n");
 		return false;
@@ -143,22 +143,29 @@ void Game::initGame()
 	world = new GameWorld(settings.world_size);
 	Vect world_size = world->getSize();
 
-	Vect ball_pos = Vect(world_size.x / 2, world_size.y / 2);
-	Vect ball_vel = Vect(200, 200);
-	ball = new Ball(world, ball_pos, settings.ball_radius, ball_vel);
+	Vect ball_pos = Vect(world_size.x / 2.0f, world_size.y / 2.0f);
+	Vect ball_vel = Vect(150, 150);
+	ball = new Ball(*world, ball_pos, settings.ball_radius, ball_vel);
+
+	Vect& carriage_size = settings.carriage_size;
+	Vect carriage_pos = Vect(world_size.x / 2.0f, world_size.y / 2.0f);
+	carriage = new Carriage(*world, carriage_pos, carriage_size);
+
 	paused = false;
 }
 
 
 void Game::update()
 {
-	world->update(io, render_elapsed_time);
+	world->update(*io, render_elapsed_time);
 	if (!paused) {
-		ball->update(io, render_elapsed_time);
+		ball->update(*io, render_elapsed_time);
+		carriage->update(*io, render_elapsed_time);
 	}
 }
 
-void Game::render(ImDrawList* draw_list)
+void Game::render(ImDrawList& draw_list)
 {
-	ball->draw(io, draw_list);
+	ball->draw(*io, draw_list);
+	carriage->draw(*io, draw_list);
 }

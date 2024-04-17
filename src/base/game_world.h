@@ -12,7 +12,7 @@ public:
 	GameWorld(Vect size);
 	Vect getSize();
 
-	void update(ImGuiIO* io, float elapsed);
+	void update(ImGuiIO& io, float elapsed);
 	float toScreenCoords(float position);
 	Vect toScreenCoords(Vect position);
 };

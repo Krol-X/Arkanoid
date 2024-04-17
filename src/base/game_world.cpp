@@ -10,9 +10,9 @@ Vect GameWorld::getSize()
 	return size;
 }
 
-void GameWorld::update(ImGuiIO* io, float elapsed)
+void GameWorld::update(ImGuiIO& io, float elapsed)
 {
-	coords_to_screen = Vect(io->DisplaySize.x / size.x, io->DisplaySize.y / size.y);
+	coords_to_screen = Vect(io.DisplaySize.x / size.x, io.DisplaySize.y / size.y);
 }
 
 float GameWorld::toScreenCoords(float position)

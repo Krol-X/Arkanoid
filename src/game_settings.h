@@ -32,5 +32,5 @@ public:
     float ball_radius = 10.0f;
     float ball_speed = 150.0f;
 
-    float carriage_width = 100.0f;
+    Vect carriage_size = Vect(100.0f, 50.0f);
 };
