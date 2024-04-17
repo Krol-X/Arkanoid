@@ -6,11 +6,15 @@ void Carriage::update(ImGuiIO& io, float elapsed)
     const float DELAY_COEFFICIENT = 0.9f;
 
     // Input check
-    if (io.KeysDown[GLFW_KEY_A]) {
-        velocity.x = -200.0f;
+    if (io.KeysDown[GLFW_KEY_A] || io.KeysDown[GLFW_KEY_LEFT]) {
+        velocity.x -= 15.0f;
+        if (velocity.x < -200.0f)
+            velocity.x = -200.0f;
     }
-    else if (io.KeysDown[GLFW_KEY_D]) {
-        velocity.x = 200.0f;
+    else if (io.KeysDown[GLFW_KEY_D] || io.KeysDown[GLFW_KEY_RIGHT]) {
+        velocity.x += 15.0f;
+        if (velocity.x > 200.0f)
+            velocity.x = 200.0f;
     }
     else {
         velocity.x *= DELAY_COEFFICIENT;

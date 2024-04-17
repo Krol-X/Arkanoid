@@ -3,6 +3,7 @@
 #include "base.h"
 #include "imgui_impl_glfw.h"
 #include "game_world.h"
+#include <vector>
 
 class GameObject
 {
@@ -16,6 +17,11 @@ public:
     const Vect& getCenter() const;
     const Vect& getSize() const;
     const Vect& getVelocity() const;
+
+    std::vector<Vect> GameObject::getPoints() const;
+    bool containsPoint(const Vect& point) const;
+    Vect GameObject::getCollisionVector(const Vect& point) const;
+    void GameObject::handleCollision(const Vect& collision_vector);
 
     void update(const ImGuiIO& io, float elapsed);
     virtual void draw(ImGuiIO& io, ImDrawList& draw_list) = 0;

@@ -154,13 +154,28 @@ void Game::initGame()
 	paused = false;
 }
 
-
 void Game::update()
 {
 	world->update(*io, render_elapsed_time);
 	if (!paused) {
 		ball->update(*io, render_elapsed_time);
 		carriage->update(*io, render_elapsed_time);
+		checkCollisions();
+	}
+}
+
+void Game::checkCollisions()
+{
+	std::vector<Vect> carriage_points = carriage->getPoints();
+
+	for (const Vect& point: carriage_points)
+	{
+		if (ball->containsPoint(point))
+		{
+			Vect collision_vector = ball->getCollisionVector(point);
+			ball->handleCollision(collision_vector);
+			break;
+		}
 	}
 }
 

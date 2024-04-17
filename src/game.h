@@ -32,5 +32,6 @@ private:
     void initImGui();
     void initGame();
     void update();
+    void checkCollisions();
     void render(ImDrawList& drawList);
 };

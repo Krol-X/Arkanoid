@@ -35,3 +35,12 @@ void Ball::draw(ImGuiIO& io, ImDrawList& draw_list)
     Vect p_max = world.toScreenCoords(center + half_size);
     draw_list.AddRectFilled(p_min, p_max, ImColor(255, 150, 50));
 }
+
+// For circle
+//bool Ball::containsPoint(const Vect& point) const
+//{
+//    Vect distance = point - center;
+//    float sqrDistance = distance.x * distance.x + distance.y * distance.y;
+//    float sqrRadius = radius * radius;
+//    return sqrDistance <= sqrRadius;
+//}
