@@ -1,3 +1,5 @@
+// Auto-included file
+
 #include <mathfu/rect.h>
 #include <mathfu/vector.h>
 
@@ -9,3 +11,4 @@ using Vect = mathfu::Vector<float, 2>;
         operator Vect() const { return Vect(x,y); }
 
 #include <imgui.h>
+#include <vector>

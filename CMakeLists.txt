@@ -1,4 +1,3 @@
-
 cmake_minimum_required(VERSION 3.19)
 
 project("Arkanoid") 
@@ -32,28 +31,32 @@ target_include_directories(glad PUBLIC ${glfw_out_path}/deps/)
 
 # imgui with glfw + opengl3 backend
 add_library(imgui STATIC
-   ${imgui_out_path}/imgui.cpp
-   ${imgui_out_path}/imgui_demo.cpp
-   ${imgui_out_path}/imgui_draw.cpp
-   ${imgui_out_path}/imgui_tables.cpp
-   ${imgui_out_path}/imgui_widgets.cpp
-   ${imgui_out_path}/backends/imgui_impl_glfw.cpp
-   ${imgui_out_path}/backends/imgui_impl_opengl3.cpp
+  ${imgui_out_path}/imgui.cpp
+  ${imgui_out_path}/imgui_demo.cpp
+  ${imgui_out_path}/imgui_draw.cpp
+  ${imgui_out_path}/imgui_tables.cpp
+  ${imgui_out_path}/imgui_widgets.cpp
+  ${imgui_out_path}/backends/imgui_impl_glfw.cpp
+  ${imgui_out_path}/backends/imgui_impl_opengl3.cpp
 )
 
 target_include_directories(imgui PUBLIC 
-   ${imgui_out_path}
-   ${imgui_out_path}/backends
+  ${imgui_out_path}
+  ${imgui_out_path}/backends
 )
 
 #target_compile_definitions(imgui PUBLIC IM_VEC2_CLASS_EXTRA)
 target_link_libraries(imgui glad glfw)
 
-# arkanoid
+# game
 file(GLOB srcs
-   "src/*.h"
-   "src/*.cpp"
+  "include/*.h"
+  "include/**/*.h"
+  "src/*.cpp"
+  "src/**/*.cpp"
 )
+
+# include_directories(${CMAKE_SOURCE_DIR}/include)
 
 find_package(OpenGL REQUIRED)
 
@@ -65,3 +68,11 @@ set_directory_properties(PROPERTIES VS_STARTUP_PROJECT ${CMAKE_PROJECT_NAME})
 target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE MATHFU_COMPILE_WITHOUT_SIMD_SUPPORT)
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE ${mathfu_out_path}/include/)
 target_link_libraries(${CMAKE_PROJECT_NAME} glad imgui ${OPENGL_LIBRARIES})
+
+target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/include/)
+if(MSVC)
+    add_definitions(/FI base.h)
+else()
+    # GCC or Clang
+    add_definitions(-include base.h)
+endif()
