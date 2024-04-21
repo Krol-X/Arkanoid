@@ -20,6 +20,8 @@ Game::Game()
 	if (!initGlfw())
 		return;
 	initImGui();
+	soundEngine = irrklang::createIrrKlangDevice();
+
 	initGame();
 
 	inited = true;
@@ -46,6 +48,9 @@ void Game::Run()
 {
 	if (!inited)
 		return;
+
+	soundEngine->play2D("back_music.mp3", true);
+	soundEngine->setSoundVolume(0.33f);
 
 	ImVec4 clear_color = ImVec4(0.05f, 0.075f, 0.1f, 1.00f);
 

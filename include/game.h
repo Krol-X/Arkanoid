@@ -3,10 +3,13 @@
 #include <glad/gl.h>
 #include <GLFW/glfw3.h>
 #include "imgui_impl_glfw.h"
+#include <irrKlang.h>
+
 #include "game_settings.h"
 #include "game/ball.h"
 #include "game/carriage.h"
 #include <game/brick.h>
+
 
 class Game {
 public:
@@ -17,8 +20,9 @@ public:
 
 private:
     const char* glsl_version;
-    GLFWwindow* window = nullptr;
-    ImGuiIO* io = nullptr;
+    GLFWwindow* window = NULL;
+    ImGuiIO* io = NULL;
+    irrklang::ISoundEngine* soundEngine = NULL;
     GameSettings settings;
 
     bool inited = false;

@@ -14,9 +14,19 @@ set(mathfu_name "mathfu-1.1.0")
 set(mathfu_zip_path "${CMAKE_SOURCE_DIR}/bin/${mathfu_name}.zip")
 set(mathfu_out_path "${CMAKE_BINARY_DIR}/${mathfu_name}")
 
+set(irrklang_version "64bit-1.6.0")
+set(irrklang_name "irrKlang-${irrklang_version}")
+set(irrklang_zip_path "${CMAKE_SOURCE_DIR}/bin/${irrklang_name}.zip")
+set(irrklang_out_path "${CMAKE_BINARY_DIR}/${irrklang_name}")
+
+
+
 file(ARCHIVE_EXTRACT INPUT ${imgui_zip_path})
 file(ARCHIVE_EXTRACT INPUT ${glfw_zip_path})
 file(ARCHIVE_EXTRACT INPUT ${mathfu_zip_path})
+file(ARCHIVE_EXTRACT INPUT ${irrklang_zip_path})
+
+
 
 # glfw
 set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "Build the GLFW example programs")
@@ -39,6 +49,23 @@ add_library(imgui STATIC
   ${imgui_out_path}/backends/imgui_impl_glfw.cpp
   ${imgui_out_path}/backends/imgui_impl_opengl3.cpp
 )
+
+# irrklang
+set(irrklang_include_dir "${irrklang_out_path}/include")
+set(irrklang_lib_dir "${irrklang_out_path}/lib")
+
+if(WIN32)
+  set(irrklang_libs 
+    "${irrklang_lib_dir}/Winx64-visualStudio/irrKlang.lib")
+  set(irrklang_bin_dir "${irrklang_out_path}/bin/winx64-visualStudio")
+elseif(UNIX AND NOT APPLE)
+  set(irrklang_libs 
+    "${irrklang_lib_dir}/linux-gcc-64/libIrrKlang.so")
+  set(irrklang_bin_dir "${irrklang_out_path}/bin/linux-gcc-64")
+elseif(APPLE)
+endif()
+
+
 
 target_include_directories(imgui PUBLIC 
   ${imgui_out_path}
@@ -70,3 +97,13 @@ target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE ${mathfu_out_path}/incl
 target_link_libraries(${CMAKE_PROJECT_NAME} glad imgui ${OPENGL_LIBRARIES})
 
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/include/)
+
+
+target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE ${irrklang_include_dir})
+target_link_libraries(${CMAKE_PROJECT_NAME} ${irrklang_libs})
+if(WIN32)
+  file(COPY ${irrklang_bin_dir}/ikpFlac.dll
+            ${irrklang_bin_dir}/ikpMP3.dll
+            ${irrklang_bin_dir}/irrKlang.dll
+       DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+endif()
