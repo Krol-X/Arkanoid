@@ -1,58 +1,58 @@
 #include "engine/game_object.h"
 
-const Vect& GameObject::getCenter() const {
-	return center;
+const Vect& GameObject::getPosition() const {
+	return position;
 }
 
 const Vect& GameObject::getSize() const {
 	return size;
 }
 
+const Vect& GameObject::getHalfSize() const {
+	return half_size;
+}
+
 const Vect& GameObject::getVelocity() const {
 	return velocity;
 }
 
-// todo
-std::vector<Vect> GameObject::getPoints() const {
-	std::vector<Vect> points;
-	points.push_back(Vect(center.x - half_size.x, center.y - half_size.y));
-	points.push_back(Vect(center.x + half_size.x, center.y - half_size.y));
-	points.push_back(Vect(center.x - half_size.x, center.y + half_size.y));
-	points.push_back(Vect(center.x + half_size.x, center.y + half_size.y));
-	return points;
+// Алгоритм минимального вектора пересечения (Minimum Translation Vector, MTV)
+CollisionSide GameObject::getCollisionVector(GameObject& object) const
+{
+	Vect position2 = object.position;
+	Vect half_size2 = object.half_size;
+
+	// Проверка пересечения
+	if (position2.x + half_size2.x < position.x - half_size.x
+		|| position.x + half_size.x < position2.x - half_size2.x
+		|| position2.y + half_size2.y < position.y - half_size.y
+		|| position.y + half_size.y < position2.y - half_size2.y) {
+		return NONE;
+	}
+
+	// Вычисление минимального вектора пересечения
+	float overlapX = std::min(position.x + half_size.x, position2.x + half_size2.x) -
+		std::max(position.x - half_size.x, position2.x - half_size2.x);
+	float overlapY = std::min(position.y + half_size.y, position2.y + half_size2.y) -
+		std::max(position.y - half_size.y, position2.y - half_size2.y);
+
+	// Определение стороны столкновения
+	if (overlapX > overlapY) {
+		return (position.y < position2.y) ? TOP_SIDE : BOTTOM_SIDE;
+	}
+	else {
+		return (position.x < position2.x) ? LEFT_SIDE : RIGHT_SIDE;
+	}
 }
 
-bool GameObject::containsPoint(const Vect& point) const
+void GameObject::handleCollision(GameObject& object, CollisionSide side)
 {
-	Vect min = center - half_size;
-	Vect max = center + half_size;
-
-	return (point.x >= min.x && point.x <= max.x) &&
-		(point.y >= min.y && point.y <= max.y);
-}
-
-Vect GameObject::getCollisionVector(const Vect& point) const
-{
-	Vect result = Vect(0.f);
-
-	if (point.x < center.x)
-		result.x = -1.0f;
-	else if (center.x < point.x)
-		result.x = 1.0f;
-
-	if (point.y < center.y)
-		result.y = -1.0f;
-	else if (center.y < point.y)
-		result.y = 1.0f;
-
-	return result;
-}
-
-void GameObject::handleCollision(const Vect& collision_vector)
-{
-	velocity *= -collision_vector;
 }
 
 void GameObject::update(const ImGuiIO& io, float elapsed) {
-	center += velocity * elapsed;
+	position += velocity * elapsed;
+}
+
+void GameObject::draw(ImGuiIO& io, ImDrawList& draw_list)
+{
 }

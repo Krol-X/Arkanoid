@@ -64,8 +64,8 @@ void Game::Run()
 		last_time = cur_time;
 
 		update();
-		ImDrawList* bg_drawlist = ImGui::GetBackgroundDrawList();
-		render(*bg_drawlist);
+		ImDrawList* draw_list = ImGui::GetBackgroundDrawList();
+		render(*draw_list);
 
 		// Rendering
 		ImGui::Render();
@@ -144,7 +144,7 @@ void Game::initGame()
 	Vect world_size = world->getSize();
 
 	Vect ball_pos = Vect(world_size.x / 2.0f, world_size.y / 2.0f);
-	Vect ball_vel = Vect(150, 150);
+	Vect ball_vel = Vect(100, 100);
 	ball = new Ball(*world, ball_pos, settings.ball_radius, ball_vel);
 
 	Vect& carriage_size = settings.carriage_size;
@@ -181,8 +181,20 @@ void Game::generateBricks()
 
 void Game::update()
 {
+	bool step = false;
+
 	world->update(*io, render_elapsed_time);
-	if (!paused) {
+
+	if (io->KeysDown[GLFW_KEY_SPACE])
+	{
+		paused = !paused;
+	}
+	if (io->KeysDown[GLFW_KEY_KP_ADD])
+	{
+		step = true;
+	}
+
+	if (!paused || step) {
 		ball->update(*io, render_elapsed_time);
 		carriage->update(*io, render_elapsed_time);
 		checkCollisions();
@@ -191,16 +203,10 @@ void Game::update()
 
 void Game::checkCollisions()
 {
-	std::vector<Vect> carriage_points = carriage->getPoints();
-
-	for (const Vect& point: carriage_points)
+	auto collsion = ball->getCollisionVector(*carriage);
+	if (collsion)
 	{
-		if (ball->containsPoint(point))
-		{
-			Vect collision_vector = ball->getCollisionVector(point);
-			ball->handleCollision(collision_vector);
-			break;
-		}
+		ball->handleCollision(*carriage, collsion);
 	}
 }
 
@@ -208,8 +214,8 @@ void Game::render(ImDrawList& draw_list)
 {
 	ball->draw(*io, draw_list);
 	carriage->draw(*io, draw_list);
-	for (Brick* brick : bricks)
+	/*for (Brick* brick : bricks)
 	{
 		brick->draw(*io, draw_list);
-	}
+	}*/
 }

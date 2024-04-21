@@ -5,30 +5,39 @@
 #include "game_world.h"
 #include <vector>
 
+enum CollisionSide
+{
+    NONE,
+    LEFT_SIDE,
+    RIGHT_SIDE,
+    TOP_SIDE,
+    BOTTOM_SIDE,
+    CORNER
+};
+
 class GameObject
 {
 public:
     GameObject(GameWorld& world, const Vect& center_position, const Vect& size)
-        : world(world), center(center_position), size(size), velocity(Vect(0.f)), half_size(size / 2.0f) {}
+        : world(world), position(center_position), size(size), velocity(Vect(0.f)), half_size(size / 2.0f) {}
     GameObject(GameWorld& world, const Vect& center_position, const Vect& size, const Vect& velocity)
-        : world(world), center(center_position), size(size), velocity(velocity), half_size(size / 2.0f) {}
+        : world(world), position(center_position), size(size), velocity(velocity), half_size(size / 2.0f) {}
     virtual ~GameObject() = default;
 
-    const Vect& getCenter() const;
+    const Vect& getPosition() const;
     const Vect& getSize() const;
+    const Vect& getHalfSize() const;
     const Vect& getVelocity() const;
 
-    std::vector<Vect> GameObject::getPoints() const;
-    bool containsPoint(const Vect& point) const;
-    Vect GameObject::getCollisionVector(const Vect& point) const;
-    void GameObject::handleCollision(const Vect& collision_vector);
+    CollisionSide getCollisionVector(GameObject& object) const;
+    void handleCollision(GameObject& object, CollisionSide side);
 
     void update(const ImGuiIO& io, float elapsed);
-    virtual void draw(ImGuiIO& io, ImDrawList& draw_list) = 0;
+    void draw(ImGuiIO& io, ImDrawList& draw_list);
 
 protected:
     GameWorld& world;
-    Vect center;
+    Vect position;
     Vect size;
     Vect velocity;
     Vect half_size;

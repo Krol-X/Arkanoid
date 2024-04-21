@@ -1,5 +1,6 @@
 #include "game/carriage.h"
 #include <GLFW/glfw3.h>
+#include <string>
 
 void Carriage::update(ImGuiIO& io, float elapsed)
 {
@@ -27,21 +28,21 @@ void Carriage::update(ImGuiIO& io, float elapsed)
     GameObject::update(io, elapsed);
 
     // Check edges
-    if (center.x < half_size.x)
+    if (position.x < half_size.x)
     {
-        center.x = half_size.x;
+        position.x = half_size.x;
         velocity.x = 0;
     }
-    else if (center.x > (world.getSize().x - half_size.x))
+    else if (position.x > (world.getSize().x - half_size.x))
     {
-        center.x = world.getSize().x - half_size.x;
+        position.x = world.getSize().x - half_size.x;
         velocity.x = 0;
     }
 }
 
 void Carriage::draw(ImGuiIO& io, ImDrawList& draw_list)
 {
-    Vect screen_lt = world.toScreenCoords(center - half_size);
-    Vect screen_rb = world.toScreenCoords(center + half_size);
+    Vect screen_lt = world.toScreenCoords(position - half_size);
+    Vect screen_rb = world.toScreenCoords(position + half_size);
     draw_list.AddRectFilled(screen_lt, screen_rb, ImColor(255, 255, 255));
 }
