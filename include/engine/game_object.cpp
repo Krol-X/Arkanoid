@@ -1,4 +1,4 @@
-#include "engine/game_object.h"
+#include "game_object.h"
 
 const Vect& GameObject::getCenter() const {
 	return center;

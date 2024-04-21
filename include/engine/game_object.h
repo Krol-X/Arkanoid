@@ -1,14 +1,35 @@
 #pragma once
 
-#include "engine_object.h"
+#include "base.h"
+#include "imgui_impl_glfw.h"
+#include "game_world.h"
+#include <vector>
 
-class GameObject : public EngineObject
+class GameObject
 {
 public:
-	GameObject(Vect position, Vect size, Vect velocity);
-	void handleEvent(const EventType event, EventParams& params);
-	
-	const Vect& getVelocity() const;
+    GameObject(GameWorld& world, const Vect& center_position, const Vect& size)
+        : world(world), center(center_position), size(size), velocity(Vect(0.f)), half_size(size / 2.0f) {}
+    GameObject(GameWorld& world, const Vect& center_position, const Vect& size, const Vect& velocity)
+        : world(world), center(center_position), size(size), velocity(velocity), half_size(size / 2.0f) {}
+    virtual ~GameObject() = default;
+
+    const Vect& getCenter() const;
+    const Vect& getSize() const;
+    const Vect& getVelocity() const;
+
+    std::vector<Vect> GameObject::getPoints() const;
+    bool containsPoint(const Vect& point) const;
+    Vect GameObject::getCollisionVector(const Vect& point) const;
+    void GameObject::handleCollision(const Vect& collision_vector);
+
+    void update(const ImGuiIO& io, float elapsed);
+    virtual void draw(ImGuiIO& io, ImDrawList& draw_list) = 0;
+
 protected:
-	Vect velocity;
+    GameWorld& world;
+    Vect center;
+    Vect size;
+    Vect velocity;
+    Vect half_size;
 };
