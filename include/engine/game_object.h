@@ -30,7 +30,7 @@ public:
     const Vect& getVelocity() const;
 
     CollisionSide getCollisionVector(GameObject& object) const;
-    void handleCollision(GameObject& object, CollisionSide side);
+    bool handleCollision(GameObject& object, CollisionSide side);
 
     void update(const ImGuiIO& io, float elapsed);
     void draw(ImGuiIO& io, ImDrawList& draw_list);

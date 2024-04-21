@@ -45,8 +45,9 @@ CollisionSide GameObject::getCollisionVector(GameObject& object) const
 	}
 }
 
-void GameObject::handleCollision(GameObject& object, CollisionSide side)
+bool GameObject::handleCollision(GameObject& object, CollisionSide side)
 {
+	return false;
 }
 
 void GameObject::update(const ImGuiIO& io, float elapsed) {

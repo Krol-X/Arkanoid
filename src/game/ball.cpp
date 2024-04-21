@@ -2,7 +2,7 @@
 #include <cstdio>
 #include <string>
 
-void Ball::handleCollision(GameObject& object, CollisionSide side)
+bool Ball::handleCollision(GameObject& object, CollisionSide side)
 {
     Vect position2 = object.getPosition();
     Vect half_size2 = object.getHalfSize();
@@ -10,33 +10,29 @@ void Ball::handleCollision(GameObject& object, CollisionSide side)
     switch (side)
     {
     case CollisionSide::LEFT_SIDE:
-        printf("LEFT_SIDE\n");
         position.x = position2.x - half_size2.x - half_size.x;
         velocity.x = -std::abs(velocity.x);
-        break;
+        return true;
     case CollisionSide::RIGHT_SIDE:
-        printf("RIGHT_SIDE\n");
         position.x = position2.x + half_size2.x + half_size.x;
         velocity.x = std::abs(velocity.x);
-        break;
+        return true;
     case CollisionSide::TOP_SIDE:
-        printf("TOP_SIDE\n");
         position.y = position2.y - half_size2.y - half_size.y;
         velocity.y = -std::abs(velocity.y);
-        break;
+        return true;
     case CollisionSide::BOTTOM_SIDE:
-        printf("BOTTOM_SIDE\n");
         position.y = position2.y + half_size2.y + half_size.y;
         velocity.y = std::abs(velocity.y);
-        break;
+        return true;
     case CollisionSide::CORNER:
-        printf("CORNER\n");
         velocity.x = -velocity.x;
         velocity.y = -velocity.y;
-        break;
+        return true;
     default:
         break;
     }
+    return false;
 }
 
 void Ball::update(ImGuiIO& io, float elapsed)

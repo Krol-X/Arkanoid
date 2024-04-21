@@ -1,5 +1,10 @@
 #include "game/brick.h"
 
+bool Brick::handleCollision(GameObject& object, CollisionSide side)
+{
+    return false;
+}
+
 void Brick::draw(ImGuiIO& io, ImDrawList& draw_list)
 {
     Vect screen_lt = world.toScreenCoords(position - half_size);

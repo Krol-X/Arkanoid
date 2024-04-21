@@ -203,10 +203,35 @@ void Game::update()
 
 void Game::checkCollisions()
 {
+	std::vector<Brick*> bricksToRemove;
+
 	auto collsion = ball->getCollisionVector(*carriage);
 	if (collsion)
 	{
 		ball->handleCollision(*carriage, collsion);
+	}
+
+	for (Brick* brick : bricks)
+	{
+		auto collsion = ball->getCollisionVector(*brick);
+		if (collsion)
+		{
+			ball->handleCollision(*brick, collsion);
+			brick->handleCollision(*ball, collsion);
+			bricksToRemove.push_back(brick);
+			break;
+		}
+	}
+
+	// Delete kicked bricks
+	for (Brick* brick : bricksToRemove)
+	{
+		auto it = std::find(bricks.begin(), bricks.end(), brick);
+		if (it != bricks.end())
+		{
+			bricks.erase(it);
+			delete brick;
+		}
 	}
 }
 
@@ -214,8 +239,8 @@ void Game::render(ImDrawList& draw_list)
 {
 	ball->draw(*io, draw_list);
 	carriage->draw(*io, draw_list);
-	/*for (Brick* brick : bricks)
+	for (Brick* brick : bricks)
 	{
 		brick->draw(*io, draw_list);
-	}*/
+	}
 }
