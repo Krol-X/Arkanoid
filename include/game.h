@@ -13,32 +13,37 @@
 
 class Game {
 public:
-    Game();
-    bool isInited() const;
-    void Run();
-    ~Game();
+	Game();
+	bool isInited() const;
+	void Run();
+	~Game();
 
 private:
-    const char* glsl_version;
-    GLFWwindow* window = NULL;
-    ImGuiIO* io = NULL;
-    irrklang::ISoundEngine* soundEngine = NULL;
-    GameSettings settings;
+	const char* glsl_version;
+	GLFWwindow* window = NULL;
+	ImGuiIO* io = NULL;
+	irrklang::ISoundEngine* soundEngine = NULL;
+	GameSettings settings;
 
-    bool inited = false;
-    bool paused = true;
-    float render_elapsed_time = 0.0f;
+	irrklang::ISound* music;
+	irrklang::ISoundSource* wall_sound;
+	irrklang::ISoundSource* brick_sound;
 
-    GameWorld* world;
-    Ball* ball;
-    Carriage* carriage;
-    std::vector<Brick*> bricks;
+	bool inited = false;
+	bool paused = true;
+	float render_elapsed_time = 0.0f;
 
-    bool initGlfw();
-    void initImGui();
-    void initGame();
-    void generateBricks();
-    void update();
-    void checkCollisions();
-    void render(ImDrawList& drawList);
+	GameWorld* world;
+	Ball* ball;
+	Carriage* carriage;
+	std::vector<Brick*> bricks;
+
+	bool initGlfw();
+	void initImGui();
+	void initAudio();
+	void initGame();
+	void generateBricks();
+	void update();
+	void checkCollisions();
+	void render(ImDrawList& drawList);
 };

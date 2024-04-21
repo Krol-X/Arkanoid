@@ -50,8 +50,9 @@ bool GameObject::handleCollision(GameObject& object, CollisionSide side)
 	return false;
 }
 
-void GameObject::update(const ImGuiIO& io, float elapsed) {
+bool GameObject::update(const ImGuiIO& io, float elapsed) {
 	position += velocity * elapsed;
+	return false;
 }
 
 void GameObject::draw(ImGuiIO& io, ImDrawList& draw_list)

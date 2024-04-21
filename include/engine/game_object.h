@@ -32,7 +32,7 @@ public:
     CollisionSide getCollisionVector(GameObject& object) const;
     bool handleCollision(GameObject& object, CollisionSide side);
 
-    void update(const ImGuiIO& io, float elapsed);
+    bool update(const ImGuiIO& io, float elapsed);
     void draw(ImGuiIO& io, ImDrawList& draw_list);
 
 protected:

@@ -20,8 +20,7 @@ Game::Game()
 	if (!initGlfw())
 		return;
 	initImGui();
-	soundEngine = irrklang::createIrrKlangDevice();
-
+	initAudio();
 	initGame();
 
 	inited = true;
@@ -36,6 +35,8 @@ Game::~Game()
 
 		glfwDestroyWindow(window);
 		glfwTerminate();
+
+		soundEngine->drop();
 	}
 }
 
@@ -48,9 +49,6 @@ void Game::Run()
 {
 	if (!inited)
 		return;
-
-	soundEngine->play2D("back_music.mp3", true);
-	soundEngine->setSoundVolume(0.33f);
 
 	ImVec4 clear_color = ImVec4(0.05f, 0.075f, 0.1f, 1.00f);
 
@@ -143,6 +141,18 @@ void Game::initImGui()
 	ImGui_ImplOpenGL3_Init(glsl_version);
 }
 
+void Game::initAudio()
+{
+	soundEngine = irrklang::createIrrKlangDevice();
+	soundEngine->setSoundVolume(0.5f);
+	music = soundEngine->play2D("back_music.mp3", true, false, true);
+	if (music) {
+		music->setVolume(0.5f);
+	}
+	wall_sound = soundEngine->addSoundSourceFromFile("wall.wav", irrklang::ESM_AUTO_DETECT, true);
+	brick_sound = soundEngine->addSoundSourceFromFile("brick.wav", irrklang::ESM_AUTO_DETECT, true);
+}
+
 void Game::initGame()
 {
 	world = new GameWorld(settings.world_size);
@@ -200,7 +210,11 @@ void Game::update()
 	}
 
 	if (!paused || step) {
-		ball->update(*io, render_elapsed_time);
+		if (ball->update(*io, render_elapsed_time))
+		{
+			if (wall_sound)
+				soundEngine->play2D(wall_sound);
+		}
 		carriage->update(*io, render_elapsed_time);
 		checkCollisions();
 	}
@@ -214,6 +228,8 @@ void Game::checkCollisions()
 	if (collsion)
 	{
 		ball->handleCollision(*carriage, collsion);
+		if (wall_sound)
+			soundEngine->play2D(wall_sound);
 	}
 
 	for (Brick* brick : bricks)
@@ -224,6 +240,8 @@ void Game::checkCollisions()
 			ball->handleCollision(*brick, collsion);
 			brick->handleCollision(*ball, collsion);
 			bricksToRemove.push_back(brick);
+			if (brick_sound)
+				soundEngine->play2D(brick_sound);
 			break;
 		}
 	}

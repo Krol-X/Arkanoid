@@ -9,6 +9,6 @@ public:
 		: GameObject(world, position, Vect(radius * 2.0f), velocity) {}
 
 	bool handleCollision(GameObject& object, CollisionSide side);
-	void update(ImGuiIO& io, float elapsed);
+	bool update(ImGuiIO& io, float elapsed);
 	void draw(ImGuiIO& io, ImDrawList& draw_list);
 };
