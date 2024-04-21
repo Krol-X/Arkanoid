@@ -5,7 +5,7 @@ GameObject::GameObject(Vect position, Vect size, Vect velocity = Vect(0.f))
 {
 }
 
-void GameObject::handleEvent(const EventType event, EventParams params)
+void GameObject::handleEvent(const EventType event, EventParams& params)
 {
 	switch (event)
 	{
@@ -15,4 +15,9 @@ void GameObject::handleEvent(const EventType event, EventParams params)
 		default:
 			break;
 	}
+}
+
+const Vect& GameObject::getVelocity() const
+{
+	return velocity;
 }

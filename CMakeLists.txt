@@ -70,9 +70,3 @@ target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE ${mathfu_out_path}/incl
 target_link_libraries(${CMAKE_PROJECT_NAME} glad imgui ${OPENGL_LIBRARIES})
 
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/include/)
-if(MSVC)
-    add_definitions(/FI base.h)
-else()
-    # GCC or Clang
-    add_definitions(-include base.h)
-endif()

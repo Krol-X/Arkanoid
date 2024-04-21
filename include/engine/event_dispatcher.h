@@ -1,5 +1,6 @@
 #pragma once
-#include "engine_container.h"
+
+#include "engine/engine_container.h"
 
 enum EventType
 {
@@ -22,9 +23,9 @@ enum DispatchMode
 
 struct EventParams
 {
-	EngineContainer* parent = NULL;
+	class EngineContainer* parent = NULL;
 	const ImGuiIO& io;
-	const ImDrawList& draw_list;
+	ImDrawList& draw_list;
 	float elapsed;
 };
 

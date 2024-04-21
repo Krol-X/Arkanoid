@@ -1,4 +1,4 @@
-// Auto-included file
+#pragma once
 
 #include <mathfu/rect.h>
 #include <mathfu/vector.h>

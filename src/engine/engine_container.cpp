@@ -1,13 +1,18 @@
 #include "engine/engine_container.h"
 
 EngineContainer::EngineContainer(Vect position, Vect size)
-	: EngineObject(position, size),
-	dispatcher(EventDispatcher(content, ONCE_FIRST, ONCE_FIRST))
+	: EngineObject(position, size)
 {
+	dispatcher = new EventDispatcher(content, ONCE_FIRST, ONCE_FIRST);
 }
 
-void EngineContainer::handleEvent(const EventType event, EventParams params)
+EngineContainer::~EngineContainer()
+{
+	delete dispatcher;
+}
+
+void EngineContainer::handleEvent(const EventType event, EventParams& params)
 {
 	params.parent = this;
-	dispatcher.doEvent(event, params);
+	dispatcher->doEvent(event, params);
 }

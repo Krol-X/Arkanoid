@@ -1,7 +1,9 @@
 #include "engine/event_dispatcher.h"
 
-EventDispatcher::EventDispatcher(EngineObjectArray& content,
-	DispatchMode update_mode, DispatchMode draw_mode)
+EventDispatcher::EventDispatcher(
+	EngineObjectArray& content,
+	DispatchMode update_mode, DispatchMode draw_mode
+)
 	: content(content)
 {
 	if (update_mode == ONCE_FIRST) {
