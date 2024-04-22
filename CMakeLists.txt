@@ -106,4 +106,6 @@ if(WIN32)
             ${irrklang_bin_dir}/ikpMP3.dll
             ${irrklang_bin_dir}/irrKlang.dll
        DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+
+  target_link_options(${CMAKE_PROJECT_NAME} PRIVATE "/SUBSYSTEM:WINDOWS")
 endif()
