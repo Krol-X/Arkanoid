@@ -266,4 +266,5 @@ void Game::render(ImDrawList& draw_list)
 	{
 		brick->draw(*io, draw_list);
 	}
+	world->draw(*io, draw_list);
 }

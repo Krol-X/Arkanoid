@@ -65,6 +65,7 @@ bool Ball::update(ImGuiIO& io, float elapsed)
 	{
 		position.y = world_size.y - half_size.y;
 		velocity.y *= -1.0f;
+		world.subLife();
 		result = true;
 	}
 	return result;
@@ -75,14 +76,4 @@ void Ball::draw(ImGuiIO& io, ImDrawList& draw_list)
 	Vect p_min = world.toScreenCoords(position - half_size);
 	Vect p_max = world.toScreenCoords(position + half_size);
 	draw_list.AddRectFilled(p_min, p_max, ImColor(255, 150, 50));
-
-	ImVec2 textPos(10, 10); // Позиция текста на экране
-	ImU32 textColor = ImGui::ColorConvertFloat4ToU32(ImVec4(1.0f, 1.0f, 1.0f, 1.0f));
-
-	/*   char textBuffer[200];
-	   sprintf(textBuffer, "Coordinates: (%.2f, %.2f)\nVelocity: (%.2f, %.2f)",
-		   position.x, position.y, velocity.x, velocity.y);
-	   std::string textString(textBuffer);
-
-	   draw_list.AddText(ImGui::GetIO().Fonts->Fonts[0], 16.0f, textPos, textColor, textString.c_str());*/
 }

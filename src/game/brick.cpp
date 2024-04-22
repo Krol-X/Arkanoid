@@ -2,6 +2,7 @@
 
 bool Brick::handleCollision(GameObject& object, CollisionSide side)
 {
+    world.addScore(5);
     return false;
 }
 
