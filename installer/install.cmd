@@ -1,6 +1,6 @@
 @echo off
 
-cd ..\MinSizeRel
+cd ..\Release
 del *.ini
 del *.lib
 del game.exe
