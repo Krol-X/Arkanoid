@@ -109,7 +109,7 @@ bool Game::initGlfw()
 #endif
 
 	// Create window with graphics context
-	window = glfwCreateWindow(800, 600, "My Arkanoid", NULL, NULL);
+	window = glfwCreateWindow(800, 600, "Arkanoid", NULL, NULL);
 	if (window == NULL) {
 		fprintf(stderr, "Failed to create window!\n");
 		return false;

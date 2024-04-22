@@ -1,0 +1,4 @@
+;!@Install@!UTF-8!
+Title="Arkanoid"
+RunProgram="Arkanoid.exe"
+;!@InstallEnd@!
