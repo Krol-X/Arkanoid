@@ -80,12 +80,13 @@ void Arkanoid::Run()
 
 		update();
 		if (!world->getLifes())
-		{	
+		{
 			reset(settings);
 		}
-			
+
 		ImDrawList* draw_list = ImGui::GetBackgroundDrawList();
 		render(*draw_list);
+		world->updateKeys();
 
 		// Rendering
 		ImGui::Render();
@@ -97,6 +98,12 @@ void Arkanoid::Run()
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
 		glfwSwapBuffers(window);
+
+		if (need_reset)
+		{
+			reset(settings);
+			need_reset = false;
+		}	
 	}
 }
 
@@ -174,7 +181,7 @@ void Arkanoid::initAudio()
 void Arkanoid::initGame()
 {
 	std::srand(std::time(0));
-	
+
 	world = new GameWorld(settings, *io, settings.world_size);
 	Vect world_size = world->getSize();
 
@@ -196,7 +203,7 @@ void Arkanoid::initGame()
 	generateBricks();
 
 	world->updateKeys();
-	paused = false;
+	world->paused = false;
 }
 
 void Arkanoid::doneGame()
@@ -244,20 +251,14 @@ void Arkanoid::generateBricks()
 
 void Arkanoid::update()
 {
-	bool step = false;
-
 	world->update(render_elapsed_time);
 
-	if (world->keyPressed(GLFW_KEY_SPACE, true))
+	if (world->keyPressed(GLFW_KEY_TAB, true))
 	{
-		paused = !paused;
-	}
-	if (world->keyPressed(GLFW_KEY_KP_ADD, true))
-	{
-		step = true;
+		settings.gui_draw = !settings.gui_draw;
 	}
 
-	if (!paused || step) {
+	if (!world->paused || world->step) {
 		auto old_lifes = world->getLifes();
 		if (ball->update(*io, render_elapsed_time))
 		{
@@ -275,7 +276,7 @@ void Arkanoid::update()
 		checkCollisions();
 	}
 
-	world->updateKeys();
+	world->step = false;
 }
 
 void Arkanoid::checkCollisions()
@@ -330,5 +331,6 @@ void Arkanoid::render(ImDrawList& draw_list)
 	{
 		brick->draw(*io, draw_list);
 	}
-	world->draw(draw_list);
+	if (world->draw(draw_list))
+		need_reset = true;
 }

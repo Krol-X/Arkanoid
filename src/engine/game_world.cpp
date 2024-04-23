@@ -9,7 +9,7 @@ bool GameWorld::keyPressed(uint32_t key, bool once)
 	return key_down;
 }
 
-GameWorld::GameWorld(ArkanoidSettings& settings, ImGuiIO& io, Vect size) : io(io)
+GameWorld::GameWorld(ArkanoidSettings& settings, ImGuiIO& io, Vect size) : io(io), settings(settings)
 {
 	this->size = size;
 	lifes = MAX_LIFES;
@@ -58,7 +58,7 @@ void GameWorld::updateKeys()
 	memcpy(oldKeysDown, io.KeysDown, sizeof(oldKeysDown));
 }
 
-void GameWorld::draw(ImDrawList& draw_list)
+bool GameWorld::draw(ImDrawList& draw_list)
 {
 	ImVec2 textPos(0, 0);
 	ImU32 textColor = ImGui::ColorConvertFloat4ToU32(ImVec4(1.0f, 1.0f, 1.0f, 1.0f));
@@ -69,7 +69,17 @@ void GameWorld::draw(ImDrawList& draw_list)
 
 	draw_list.AddText(ImGui::GetIO().Fonts->Fonts[0], 32.0f, textPos, textColor, textString.c_str());
 
-	debug->draw(io, draw_list);
+	if (settings.debug_draw)
+	{
+		debug->draw(io, draw_list);
+	}
+	if (settings.gui_draw)
+	{
+		debug->drawDebugWindow(io, draw_list);
+		if (debug->drawSettingsWindow(io, draw_list))
+			return true;
+	}
+	return false;
 }
 
 float GameWorld::toScreenCoords(float position)

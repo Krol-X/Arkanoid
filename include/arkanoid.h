@@ -31,7 +31,7 @@ private:
 	irrklang::ISoundSource* die_sound;
 
 	bool inited = false;
-	bool paused = true;
+	bool need_reset = false;
 	float render_elapsed_time = 0.0f;
 
 	ArkanoidSettings& settings;

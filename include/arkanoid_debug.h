@@ -13,7 +13,9 @@ public:
 
     void addHit(const Vect& pos, const Vect& normal);
     void update(ImGuiIO& io, float elapsed);
-    void draw(ImGuiIO& io, ImDrawList& draw_list);
+    bool draw(ImGuiIO& io, ImDrawList& draw_list);
+    bool drawSettingsWindow(ImGuiIO& io, ImDrawList& draw_list);
+    void drawDebugWindow(ImGuiIO& io, ImDrawList& draw_list);
 private:
     struct Hit
     {
