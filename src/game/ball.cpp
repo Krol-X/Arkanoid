@@ -92,7 +92,9 @@ bool Ball::update(ImGuiIO& io, float elapsed)
 
 void Ball::draw(ImGuiIO& io, ImDrawList& draw_list)
 {
-	float lifeRatio = (float)world.getLifes() / (float)(world.MAX_LIFES + 2);
+	float lifeRatio = (float)(world.getLifes() + 0.5) / (float)(world.MAX_LIFES);
+	if (lifeRatio > 1.f)
+		lifeRatio = 1.f;
 	const ImColor baseColor = ImColor(255, 255, 0);
 
 	ImColor color = ImColor(

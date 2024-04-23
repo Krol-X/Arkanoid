@@ -1,7 +1,7 @@
 #pragma once
 #include "base.h"
 
-class GameSettings
+class ArkanoidSettings
 {
 public:
     static constexpr int bricks_columns_min = 10;

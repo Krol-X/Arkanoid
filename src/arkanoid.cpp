@@ -1,4 +1,4 @@
-#include "game.h"
+#include "arkanoid.h"
 
 #include <cstdio>
 #include <ctime>
@@ -16,7 +16,8 @@ static void glfw_error_callback(int error, const char* description)
 
 
 
-Game::Game()
+Arkanoid::Arkanoid(ArkanoidSettings& settings)
+	:settings(settings)
 {
 	inited = false;
 
@@ -29,7 +30,7 @@ Game::Game()
 	inited = true;
 }
 
-Game::~Game()
+Arkanoid::~Arkanoid()
 {
 	if (inited) {
 		ImGui_ImplOpenGL3_Shutdown();
@@ -44,18 +45,19 @@ Game::~Game()
 	}
 }
 
-bool Game::isInited() const
+bool Arkanoid::isInited() const
 {
 	return inited;
 }
 
-void Game::Reset()
+void Arkanoid::reset(ArkanoidSettings& settings)
 {
+	this->settings = settings;
 	doneGame();
 	initGame();
 }
 
-void Game::Run()
+void Arkanoid::Run()
 {
 	if (!inited)
 		return;
@@ -79,7 +81,7 @@ void Game::Run()
 		update();
 		if (!world->getLifes())
 		{	
-			Reset();
+			reset(settings);
 		}
 			
 		ImDrawList* draw_list = ImGui::GetBackgroundDrawList();
@@ -98,7 +100,7 @@ void Game::Run()
 	}
 }
 
-bool Game::initGlfw()
+bool Arkanoid::initGlfw()
 {
 	// Setup window
 	glfwSetErrorCallback(glfw_error_callback);
@@ -141,7 +143,7 @@ bool Game::initGlfw()
 	return true;
 }
 
-void Game::initImGui()
+void Arkanoid::initImGui()
 {
 	// Setup Dear ImGui context
 	IMGUI_CHECKVERSION();
@@ -156,7 +158,7 @@ void Game::initImGui()
 	ImGui_ImplOpenGL3_Init(glsl_version);
 }
 
-void Game::initAudio()
+void Arkanoid::initAudio()
 {
 	soundEngine = irrklang::createIrrKlangDevice();
 	soundEngine->setSoundVolume(0.5f);
@@ -169,7 +171,7 @@ void Game::initAudio()
 	die_sound = soundEngine->addSoundSourceFromFile("die.wav", irrklang::ESM_AUTO_DETECT, true);
 }
 
-void Game::initGame()
+void Arkanoid::initGame()
 {
 	std::srand(std::time(0));
 	
@@ -197,7 +199,7 @@ void Game::initGame()
 	paused = false;
 }
 
-void Game::doneGame()
+void Arkanoid::doneGame()
 {
 	if (world)
 		delete world;
@@ -218,7 +220,7 @@ void Game::doneGame()
 }
 
 
-void Game::generateBricks()
+void Arkanoid::generateBricks()
 {
 	float bricks_width = (settings.world_size.x - (settings.bricks_columns_count + 1.0f) * settings.bricks_columns_padding) / settings.bricks_columns_count;
 	float bricks_height = (settings.world_size.y / 3.0f - (settings.bricks_rows_count + 1.0f) * settings.bricks_rows_padding) / settings.bricks_rows_count;
@@ -240,7 +242,7 @@ void Game::generateBricks()
 	}
 }
 
-void Game::update()
+void Arkanoid::update()
 {
 	bool step = false;
 
@@ -276,7 +278,7 @@ void Game::update()
 	world->updateKeys();
 }
 
-void Game::checkCollisions()
+void Arkanoid::checkCollisions()
 {
 	std::vector<Brick*> bricksToRemove;
 
@@ -320,7 +322,7 @@ void Game::checkCollisions()
 	}
 }
 
-void Game::render(ImDrawList& draw_list)
+void Arkanoid::render(ImDrawList& draw_list)
 {
 	ball->draw(*io, draw_list);
 	carriage->draw(*io, draw_list);

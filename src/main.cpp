@@ -1,8 +1,9 @@
-#include "game.h"
+#include "arkanoid.h"
 
 int _main(int argc, char** argv)
 {
-    Game game;
+    ArkanoidSettings settings;
+    Arkanoid game(settings);
     game.Run();
 
     return 0;

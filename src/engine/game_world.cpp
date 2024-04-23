@@ -55,7 +55,7 @@ void GameWorld::draw(ImDrawList& draw_list)
 	sprintf(textBuffer, "Score: %u\nLifes: %u", score, lifes);
 	std::string textString(textBuffer);
 
-	draw_list.AddText(ImGui::GetIO().Fonts->Fonts[0], 24.0f, textPos, textColor, textString.c_str());
+	draw_list.AddText(ImGui::GetIO().Fonts->Fonts[0], 32.0f, textPos, textColor, textString.c_str());
 }
 
 float GameWorld::toScreenCoords(float position)

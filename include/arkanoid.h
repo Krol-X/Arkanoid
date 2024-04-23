@@ -5,26 +5,25 @@
 #include "imgui_impl_glfw.h"
 #include <irrKlang.h>
 
-#include "game_settings.h"
+#include "arkanoid_settings.h"
 #include "game/ball.h"
 #include "game/carriage.h"
 #include <game/brick.h>
 
 
-class Game {
+class Arkanoid {
 public:
-	Game();
+	Arkanoid(ArkanoidSettings& settings);
 	bool isInited() const;
-	void Reset();
+	void reset(ArkanoidSettings& settings);
 	void Run();
-	~Game();
+	~Arkanoid();
 
 private:
 	const char* glsl_version;
 	GLFWwindow* window = NULL;
 	ImGuiIO* io = NULL;
 	irrklang::ISoundEngine* soundEngine = NULL;
-	GameSettings settings;
 
 	irrklang::ISound* music;
 	irrklang::ISoundSource* wall_sound;
@@ -35,6 +34,7 @@ private:
 	bool paused = true;
 	float render_elapsed_time = 0.0f;
 
+	ArkanoidSettings& settings;
 	GameWorld* world = NULL;
 	Ball* ball = NULL;
 	Carriage* carriage = NULL;
@@ -44,9 +44,9 @@ private:
 	void initImGui();
 	void initAudio();
 	void initGame();
+	void update();
 	void doneGame();
 	void generateBricks();
-	void update();
 	void checkCollisions();
 	void render(ImDrawList& drawList);
 };
