@@ -39,6 +39,7 @@ public:
     float debug_draw_normal_length = 30.0f;
     float debug_draw_timeout = 0.5f;
 
+    bool draw_fps = false;
     bool debug_draw = false;
     bool gui_draw = false;
 };

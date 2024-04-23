@@ -1,5 +1,6 @@
 #include "arkanoid_debug.h"
 #include <GLFW/glfw3.h>
+#include <string>
 
 ArkanoidDebug::ArkanoidDebug(GameWorld& world, ArkanoidSettings& settings)
 	: world(world), settings(settings)
@@ -33,6 +34,15 @@ void ArkanoidDebug::update(ImGuiIO& io, float elapsed)
 
 		hits.resize(hits.size() - remove_by_timeout_count);
 	}
+
+	frame_count++;
+	elapsed_total += elapsed;
+	if (elapsed_total > 1.0f)
+	{
+		fps = frame_count;
+		frame_count = 0;
+		elapsed_total -= 1.0f;
+	}
 }
 
 bool ArkanoidDebug::draw(ImGuiIO& io, ImDrawList& draw_list)
@@ -44,6 +54,18 @@ bool ArkanoidDebug::draw(ImGuiIO& io, ImDrawList& draw_list)
 		draw_list.AddLine(hit.screen_pos, hit.screen_pos + hit.normal * len, ImColor(255, 0, 0));
 	}
 	return false;
+}
+
+void ArkanoidDebug::drawFps(ImGuiIO& io, ImDrawList& draw_list)
+{
+	ImVec2 textPos(io.DisplaySize.x - 7*17, 0);
+	ImU32 textColor = ImGui::ColorConvertFloat4ToU32(ImVec4(1.0f, 1.0f, 1.0f, 1.0f));
+
+	char textBuffer[20];
+	sprintf(textBuffer, "FPS: %u", fps);
+	std::string textString(textBuffer);
+
+	draw_list.AddText(ImGui::GetIO().Fonts->Fonts[0], 32.0f, textPos, textColor, textString.c_str());
 }
 
 bool ArkanoidDebug::drawSettingsWindow(ImGuiIO& io, ImDrawList& draw_list)
@@ -77,6 +99,7 @@ bool ArkanoidDebug::drawSettingsWindow(ImGuiIO& io, ImDrawList& draw_list)
 void ArkanoidDebug::drawDebugWindow(ImGuiIO& io, ImDrawList& draw_list)
 {
 	ImGui::Begin("Arkanoid Debug");
+	ImGui::Checkbox("Draw fps", &settings.draw_fps);
 	ImGui::Checkbox("Debug draw", &settings.debug_draw);
 
 	if (settings.debug_draw)

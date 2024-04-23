@@ -14,6 +14,7 @@ public:
     void addHit(const Vect& pos, const Vect& normal);
     void update(ImGuiIO& io, float elapsed);
     bool draw(ImGuiIO& io, ImDrawList& draw_list);
+    void drawFps(ImGuiIO& io, ImDrawList& draw_list);
     bool drawSettingsWindow(ImGuiIO& io, ImDrawList& draw_list);
     void drawDebugWindow(ImGuiIO& io, ImDrawList& draw_list);
 private:
@@ -27,6 +28,9 @@ private:
     ArkanoidSettings& settings;
     GameWorld& world;
     std::vector<Hit> hits;
+    float elapsed_total = 0.f;
+    uint32_t frame_count = 0;
+    uint32_t fps = 0.f;
 };
 
 #include "engine/game_world.h"

@@ -79,6 +79,8 @@ bool GameWorld::draw(ImDrawList& draw_list)
 		if (debug->drawSettingsWindow(io, draw_list))
 			return true;
 	}
+	if (settings.draw_fps)
+		debug->drawFps(io, draw_list);
 	return false;
 }
 
