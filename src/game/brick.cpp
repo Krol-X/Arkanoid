@@ -3,7 +3,7 @@
 Brick::Brick(GameWorld& world, Vect& position, Vect& size)
     : GameObject(world, position, size)
 {
-    bounce_factor = 0.95f;
+    bounce_factor = 1.15f;
 }
 
 bool Brick::handleCollision(GameObject& object, CollisionSide side)

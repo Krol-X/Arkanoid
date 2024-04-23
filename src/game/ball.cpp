@@ -7,7 +7,7 @@ Ball::Ball(GameWorld& world, Vect& position, float radius, Vect& velocity)
 	: GameObject(world, position, Vect(radius * 2.0f), velocity) {}
 
 constexpr float MIN_VELOCITY = 10.0f;
-constexpr float MAX_VELOCITY = 200.0f;
+constexpr float MAX_VELOCITY = 250.0f;
 
 bool Ball::handleCollision(GameObject& object, CollisionSide side)
 {
