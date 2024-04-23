@@ -2,6 +2,8 @@
 
 #include <cstdio>
 #include <ctime>
+#define _USE_MATH_DEFINES
+#include <cmath>
 
 #include "imgui_internal.h"
 #include "imgui_impl_glfw.h"
@@ -170,16 +172,17 @@ void Game::initAudio()
 void Game::initGame()
 {
 	std::srand(std::time(0));
-
-	const Vect ball_vel_min = Vect(-150.f, 150.f);
-	const Vect ball_vel_max = Vect(150.f, 200.f);
 	
 	world = new GameWorld(settings.world_size);
 	Vect world_size = world->getSize();
 
 	Vect ball_pos = Vect(world_size.x / 2.0f, world_size.y / 2.0f);
-	float x_vel = ball_vel_min.x + fmodf((float)std::rand(), ball_vel_max.x - ball_vel_min.x + 1);
-	float y_vel = ball_vel_min.y + fmodf((float)std::rand(), ball_vel_max.y - ball_vel_min.y + 1);
+
+	float random_angle = (std::rand() % 61 + 45) * M_PI / 180.0f;
+
+	// ¬ычисл€ем компоненты вектора скорости на основе заданной скорости и случайного угла
+	float x_vel = settings.ball_speed * std::cos(random_angle);
+	float y_vel = settings.ball_speed * std::sin(random_angle);
 	Vect ball_vel = Vect(x_vel, y_vel);
 
 	ball = new Ball(*world, ball_pos, settings.ball_radius, ball_vel);

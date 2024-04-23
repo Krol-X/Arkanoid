@@ -101,7 +101,7 @@ void Ball::draw(ImGuiIO& io, ImDrawList& draw_list)
 		baseColor.Value.z * lifeRatio
 	);
 
-	Vect p_min = world.toScreenCoords(position - half_size);
-	Vect p_max = world.toScreenCoords(position + half_size);
-	draw_list.AddRectFilled(p_min, p_max, color);
+	Vect pos = world.toScreenCoords(position);
+	float radius = world.toScreenCoords(half_size).x;
+	draw_list.AddCircleFilled(pos, radius, color);
 }
