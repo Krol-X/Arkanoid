@@ -28,6 +28,7 @@ public:
     const Vect& getSize() const;
     const Vect& getHalfSize() const;
     const Vect& getVelocity() const;
+    float getBounceFactor() const;
 
     CollisionSide getCollisionVector(GameObject& object) const;
     bool handleCollision(GameObject& object, CollisionSide side);
@@ -41,4 +42,5 @@ protected:
     Vect size;
     Vect velocity;
     Vect half_size;
+    float bounce_factor = 1;
 };

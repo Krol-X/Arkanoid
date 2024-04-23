@@ -2,26 +2,38 @@
 #include <GLFW/glfw3.h>
 #include <string>
 
+Carriage::Carriage(GameWorld& world, Vect& position, Vect& size)
+    : GameObject(world, position, size)
+{
+    bounce_factor = 1.15f;
+}
+
 void Carriage::update(ImGuiIO& io, float elapsed)
 {
-    const float DELAY_COEFFICIENT = 0.9f;
+    constexpr float DELAY_COEFFICIENT = 0.9f;
+    constexpr float MIN_VELOCITY = 0.f;
+    constexpr float MAX_VELOCITY = 200.0f;
 
-    // Input check
     if (io.KeysDown[GLFW_KEY_A] || io.KeysDown[GLFW_KEY_LEFT]) {
         velocity.x -= 15.0f;
-        if (velocity.x < -200.0f)
-            velocity.x = -200.0f;
     }
     else if (io.KeysDown[GLFW_KEY_D] || io.KeysDown[GLFW_KEY_RIGHT]) {
         velocity.x += 15.0f;
-        if (velocity.x > 200.0f)
-            velocity.x = 200.0f;
     }
     else {
         velocity.x *= DELAY_COEFFICIENT;
-        if (std::abs(velocity.x) < 1.0f) {
-            velocity.x = 0.0f;
-        }
+    }
+
+    if (velocity.x > MAX_VELOCITY)
+    {
+        velocity.x = MAX_VELOCITY;
+    }
+    else if (velocity.x < -MAX_VELOCITY)
+    {
+        velocity.x = -MAX_VELOCITY;
+    }
+    if (std::abs(velocity.x) < MIN_VELOCITY) {
+        velocity.x = 0.0f;
     }
 
     // Move

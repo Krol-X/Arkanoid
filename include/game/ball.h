@@ -5,8 +5,7 @@
 class Ball : public GameObject
 {
 public:
-	Ball::Ball(GameWorld& world, Vect& position, float radius, Vect& velocity)
-		: GameObject(world, position, Vect(radius * 2.0f), velocity) {}
+	Ball(GameWorld& world, Vect& position, float radius, Vect& velocity);
 
 	bool handleCollision(GameObject& object, CollisionSide side);
 	bool update(ImGuiIO& io, float elapsed);

@@ -1,5 +1,11 @@
 #include "game/brick.h"
 
+Brick::Brick(GameWorld& world, Vect& position, Vect& size)
+    : GameObject(world, position, size)
+{
+    bounce_factor = 0.95f;
+}
+
 bool Brick::handleCollision(GameObject& object, CollisionSide side)
 {
     world.addScore(5);

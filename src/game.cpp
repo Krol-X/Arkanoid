@@ -159,7 +159,7 @@ void Game::initGame()
 	Vect world_size = world->getSize();
 
 	Vect ball_pos = Vect(world_size.x / 2.0f, world_size.y / 2.0f);
-	Vect ball_vel = Vect(100, 100);
+	Vect ball_vel = Vect(150, 150);
 	ball = new Ball(*world, ball_pos, settings.ball_radius, ball_vel);
 
 	Vect& carriage_size = settings.carriage_size;

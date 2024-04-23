@@ -16,6 +16,11 @@ const Vect& GameObject::getVelocity() const {
 	return velocity;
 }
 
+float GameObject::getBounceFactor() const
+{
+	return bounce_factor;
+}
+
 // Алгоритм минимального вектора пересечения (Minimum Translation Vector, MTV)
 CollisionSide GameObject::getCollisionVector(GameObject& object) const
 {

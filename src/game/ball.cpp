@@ -1,38 +1,57 @@
 #include "game/ball.h"
 #include <cstdio>
 #include <string>
+#include <cmath>
+
+Ball::Ball(GameWorld& world, Vect& position, float radius, Vect& velocity)
+	: GameObject(world, position, Vect(radius * 2.0f), velocity) {}
+
+constexpr float MIN_VELOCITY = 10.0f;
+constexpr float MAX_VELOCITY = 200.0f;
 
 bool Ball::handleCollision(GameObject& object, CollisionSide side)
 {
 	Vect position2 = object.getPosition();
 	Vect half_size2 = object.getHalfSize();
+	float factor = object.getBounceFactor();
 
 	switch (side)
 	{
 	case CollisionSide::LEFT_SIDE:
 		position.x = position2.x - half_size2.x - half_size.x;
-		velocity.x = -std::abs(velocity.x);
-		return true;
+		velocity.x = -std::abs(velocity.x * factor);
+		break;
 	case CollisionSide::RIGHT_SIDE:
 		position.x = position2.x + half_size2.x + half_size.x;
-		velocity.x = std::abs(velocity.x);
-		return true;
+		velocity.x = std::abs(velocity.x * factor);
+		break;
 	case CollisionSide::TOP_SIDE:
 		position.y = position2.y - half_size2.y - half_size.y;
-		velocity.y = -std::abs(velocity.y);
-		return true;
+		velocity.y = -std::abs(velocity.y * factor);
+		break;
 	case CollisionSide::BOTTOM_SIDE:
 		position.y = position2.y + half_size2.y + half_size.y;
-		velocity.y = std::abs(velocity.y);
-		return true;
-	case CollisionSide::CORNER:
-		velocity.x = -velocity.x;
-		velocity.y = -velocity.y;
-		return true;
-	default:
+		velocity.y = std::abs(velocity.y * factor);
 		break;
+	case CollisionSide::CORNER:
+		velocity.x = -(velocity.x * factor);
+		velocity.y = -(velocity.y * factor);
+		break;
+	default:
+		return false;
 	}
-	return false;
+
+	if (std::abs(velocity.x) > MAX_VELOCITY)
+		velocity.x = std::copysign(MAX_VELOCITY, velocity.x);
+	if (std::abs(velocity.y) > MAX_VELOCITY)
+		velocity.y = std::copysign(MAX_VELOCITY, velocity.y);
+
+	if (std::abs(velocity.x) < MIN_VELOCITY)
+		velocity.x = std::copysign(MIN_VELOCITY, velocity.x);
+	if (std::abs(velocity.y) < MIN_VELOCITY)
+		velocity.y = std::copysign(MIN_VELOCITY, velocity.y);
+
+	return true;
 }
 
 bool Ball::update(ImGuiIO& io, float elapsed)
