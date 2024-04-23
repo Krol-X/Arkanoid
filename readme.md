@@ -1,8 +1,8 @@
 # Simple Arkanoid game on OpenGL + ImGui
 
-- Pretty gameplay [4/6]
+- Pretty gameplay [5/6]
   - [x] Base
-  - [ ] Tech spec. requirements (classes Arkanoid, ArkanoidDebugData) *
+  - [x] Tech spec. requirements (classes Arkanoid, ArkanoidDebugData) *
   - [x] Scores
   - [ ] Bonuses and shop
   - [x] Music
