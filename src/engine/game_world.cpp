@@ -18,7 +18,12 @@ void GameWorld::addScore(uint32_t plus)
 
 void GameWorld::subLife()
 {
-	life--;
+	lifes--;
+}
+
+uint32_t GameWorld::getLifes() const
+{
+	return lifes;
 }
 
 void GameWorld::update(ImGuiIO& io, float elapsed)
@@ -32,7 +37,7 @@ void GameWorld::draw(ImGuiIO& io, ImDrawList& draw_list)
 	ImU32 textColor = ImGui::ColorConvertFloat4ToU32(ImVec4(1.0f, 1.0f, 1.0f, 1.0f));
 
 	char textBuffer[50];
-	sprintf(textBuffer, "Score: %u\nLifes: %u", score, life);
+	sprintf(textBuffer, "Score: %u\nLifes: %u", score, lifes);
 	std::string textString(textBuffer);
 
 	draw_list.AddText(ImGui::GetIO().Fonts->Fonts[0], 24.0f, textPos, textColor, textString.c_str());

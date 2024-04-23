@@ -15,6 +15,7 @@ class Game {
 public:
 	Game();
 	bool isInited() const;
+	void Reset();
 	void Run();
 	~Game();
 
@@ -33,15 +34,16 @@ private:
 	bool paused = true;
 	float render_elapsed_time = 0.0f;
 
-	GameWorld* world;
-	Ball* ball;
-	Carriage* carriage;
+	GameWorld* world = NULL;
+	Ball* ball = NULL;
+	Carriage* carriage = NULL;
 	std::vector<Brick*> bricks;
 
 	bool initGlfw();
 	void initImGui();
 	void initAudio();
 	void initGame();
+	void doneGame();
 	void generateBricks();
 	void update();
 	void checkCollisions();

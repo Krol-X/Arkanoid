@@ -37,12 +37,19 @@ Game::~Game()
 		glfwTerminate();
 
 		soundEngine->drop();
+		doneGame();
 	}
 }
 
 bool Game::isInited() const
 {
 	return inited;
+}
+
+void Game::Reset()
+{
+	doneGame();
+	initGame();
 }
 
 void Game::Run()
@@ -67,6 +74,11 @@ void Game::Run()
 		last_time = cur_time;
 
 		update();
+		if (!world->getLifes())
+		{	
+			Reset();
+		}
+			
 		ImDrawList* draw_list = ImGui::GetBackgroundDrawList();
 		render(*draw_list);
 
@@ -169,6 +181,26 @@ void Game::initGame()
 	generateBricks();
 
 	paused = false;
+}
+
+void Game::doneGame()
+{
+	if (world)
+		delete world;
+	world = NULL;
+	if (ball)
+		delete ball;
+	ball = NULL;
+	if (carriage)
+		delete carriage;
+	carriage = NULL;
+
+	for (auto& brick : bricks)
+	{
+		delete brick;
+		brick = nullptr;
+	}
+	bricks.clear();
 }
 
 
