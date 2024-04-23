@@ -15,7 +15,7 @@
 
 ## Keys
 
-[A][B] or [<-][->] move carriage
-[Tab] Cheat windows
-[Space] Step by step mode
-[+] Step
+- [A][B] or [<-][->] move carriage
+- [Tab] Cheat windows
+- [Space] Step by step mode
+- [+] Step
