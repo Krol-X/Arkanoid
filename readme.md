@@ -1,5 +1,7 @@
 # Simple Arkanoid game on OpenGL + ImGui
 
+## Roadmap
+
 - Pretty gameplay [5/6]
   - [x] Base
   - [x] Tech spec. requirements (classes Arkanoid, ArkanoidDebugData) *
@@ -10,3 +12,10 @@
 - Good Architecture [1/2]
   - [x] Base
   - [ ] More structured
+
+## Keys
+
+[A][B] or [<-][->] move carriage
+[Tab] Cheat windows
+[Space] Step by step mode
+[+] Step
