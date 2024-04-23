@@ -19,6 +19,7 @@ static void glfw_error_callback(int error, const char* description)
 Arkanoid::Arkanoid(ArkanoidSettings& settings)
 	:settings(settings)
 {
+	std::srand(std::time(0));
 	inited = false;
 
 	if (!initGlfw())
@@ -180,14 +181,14 @@ void Arkanoid::initAudio()
 
 void Arkanoid::initGame()
 {
-	std::srand(std::time(0));
-
 	world = new GameWorld(settings, *io, settings.world_size);
 	Vect world_size = world->getSize();
 
 	Vect ball_pos = Vect(world_size.x / 2.0f, world_size.y / 2.0f);
 
-	float random_angle = (20 + std::rand() % 71) * M_PI / 180.0f;
+	float random_angle = (40 + std::rand() % 20) * M_PI / 180.0f;
+	if (std::rand() % 20 > 10)
+		random_angle = random_angle + 45;
 
 	// ¬ычисл€ем компоненты вектора скорости на основе заданной скорости и случайного угла
 	float x_vel = settings.ball_speed * std::cos(random_angle);
