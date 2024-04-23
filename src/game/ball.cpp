@@ -13,6 +13,8 @@ bool Ball::handleCollision(GameObject& object, CollisionSide side)
 {
 	Vect position2 = object.getPosition();
 	Vect half_size2 = object.getHalfSize();
+	Vect old_position = position;
+	Vect normal = Vect(0.f);
 	float factor = object.getBounceFactor();
 
 	switch (side)
@@ -20,22 +22,28 @@ bool Ball::handleCollision(GameObject& object, CollisionSide side)
 	case CollisionSide::LEFT_SIDE:
 		position.x = position2.x - half_size2.x - half_size.x;
 		velocity.x = -std::abs(velocity.x * factor);
+		normal.x = std::copysignf(1.f, velocity.x);
 		break;
 	case CollisionSide::RIGHT_SIDE:
 		position.x = position2.x + half_size2.x + half_size.x;
 		velocity.x = std::abs(velocity.x * factor);
+		normal.x = std::copysignf(1.f, velocity.x);
 		break;
 	case CollisionSide::TOP_SIDE:
 		position.y = position2.y - half_size2.y - half_size.y;
 		velocity.y = -std::abs(velocity.y * factor);
+		normal.y = std::copysignf(1.f, velocity.y);
 		break;
 	case CollisionSide::BOTTOM_SIDE:
 		position.y = position2.y + half_size2.y + half_size.y;
 		velocity.y = std::abs(velocity.y * factor);
+		normal.y = std::copysignf(1.f, velocity.y);
 		break;
 	case CollisionSide::CORNER:
 		velocity.x = -(velocity.x * factor);
 		velocity.y = -(velocity.y * factor);
+		normal.x = std::copysignf(1.f, velocity.x);
+		normal.y = std::copysignf(1.f, velocity.y);
 		break;
 	default:
 		return false;
@@ -51,6 +59,8 @@ bool Ball::handleCollision(GameObject& object, CollisionSide side)
 	if (std::abs(velocity.y) < MIN_VELOCITY)
 		velocity.y = std::copysign(MIN_VELOCITY, velocity.y);
 
+	world.getDebug().addHit(old_position, normal);
+
 	return true;
 }
 
@@ -58,6 +68,8 @@ bool Ball::update(ImGuiIO& io, float elapsed)
 {
 	bool result = false;
 	Vect world_size = world.getSize();
+	Vect old_position = position;
+	Vect normal = Vect(0.f);
 
 	GameObject::update(io, elapsed);
 
@@ -65,12 +77,14 @@ bool Ball::update(ImGuiIO& io, float elapsed)
 	{
 		position.x = half_size.x;
 		velocity.x *= -1.0f;
+		normal.x = std::copysignf(1.f, velocity.x);
 		result = true;
 	}
 	else if (position.x > (world_size.x - half_size.x))
 	{
 		position.x = world_size.x - half_size.x;
 		velocity.x *= -1.0f;
+		normal.x = std::copysignf(1.f, velocity.x);
 		result = true;
 	}
 
@@ -78,15 +92,20 @@ bool Ball::update(ImGuiIO& io, float elapsed)
 	{
 		position.y = half_size.y;
 		velocity.y *= -1.0f;
+		normal.y = std::copysignf(1.f, velocity.y);
 		result = true;
 	}
 	else if (position.y > (world_size.y - half_size.y))
 	{
 		position.y = world_size.y - half_size.y;
 		velocity.y *= -1.0f;
+		normal.y = std::copysignf(1.f, velocity.y);
 		world.subLife();
 		result = true;
 	}
+
+	if (result)
+		world.getDebug().addHit(old_position, normal);
 	return result;
 }
 

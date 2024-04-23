@@ -9,11 +9,22 @@ bool GameWorld::keyPressed(uint32_t key, bool once)
 	return key_down;
 }
 
-GameWorld::GameWorld(ImGuiIO& io, Vect size) : io(io)
+GameWorld::GameWorld(ArkanoidSettings& settings, ImGuiIO& io, Vect size) : io(io)
 {
 	this->size = size;
 	lifes = MAX_LIFES;
 	memset(oldKeysDown, 0, sizeof(oldKeysDown[0]));
+	debug = new ArkanoidDebug(*this, settings);
+}
+
+GameWorld::~GameWorld()
+{
+	delete debug;
+}
+
+ArkanoidDebug& GameWorld::getDebug()
+{
+	return *debug;
 }
 
 Vect GameWorld::getSize()
@@ -39,6 +50,7 @@ uint32_t GameWorld::getLifes() const
 void GameWorld::update(float elapsed)
 {
 	coords_to_screen = Vect(io.DisplaySize.x / size.x, io.DisplaySize.y / size.y);
+	debug->update(io, elapsed);
 }
 
 void GameWorld::updateKeys()
@@ -56,6 +68,8 @@ void GameWorld::draw(ImDrawList& draw_list)
 	std::string textString(textBuffer);
 
 	draw_list.AddText(ImGui::GetIO().Fonts->Fonts[0], 32.0f, textPos, textColor, textString.c_str());
+
+	debug->draw(io, draw_list);
 }
 
 float GameWorld::toScreenCoords(float position)

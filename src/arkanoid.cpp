@@ -175,12 +175,12 @@ void Arkanoid::initGame()
 {
 	std::srand(std::time(0));
 	
-	world = new GameWorld(*io, settings.world_size);
+	world = new GameWorld(settings, *io, settings.world_size);
 	Vect world_size = world->getSize();
 
 	Vect ball_pos = Vect(world_size.x / 2.0f, world_size.y / 2.0f);
 
-	float random_angle = (std::rand() % 61 + 45) * M_PI / 180.0f;
+	float random_angle = (20 + std::rand() % 71) * M_PI / 180.0f;
 
 	// ¬ычисл€ем компоненты вектора скорости на основе заданной скорости и случайного угла
 	float x_vel = settings.ball_speed * std::cos(random_angle);

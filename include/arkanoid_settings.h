@@ -33,4 +33,8 @@ public:
     float ball_speed = 150.0f;
 
     Vect carriage_size = Vect(100.0f, 20.0f);
+
+    float debug_draw_pos_radius = 5.0f;
+    float debug_draw_normal_length = 30.0f;
+    float debug_draw_timeout = 0.5f;
 };
