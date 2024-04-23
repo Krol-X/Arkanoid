@@ -24,7 +24,7 @@
 ### Windows
 ![Windows screenshot](https://github.com/Krol-X/Arkanoid/raw/main/doc/screenshots/windows.jpg)
 
-### Linux
+### Linux (void linux, xfce)
 ![Linux screenshot](https://github.com/Krol-X/Arkanoid/raw/main/doc/screenshots/linux.jpg)
 
 ## Управление (клавиатура)
