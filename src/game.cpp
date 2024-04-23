@@ -173,7 +173,7 @@ void Game::initGame()
 {
 	std::srand(std::time(0));
 	
-	world = new GameWorld(settings.world_size);
+	world = new GameWorld(*io, settings.world_size);
 	Vect world_size = world->getSize();
 
 	Vect ball_pos = Vect(world_size.x / 2.0f, world_size.y / 2.0f);
@@ -193,6 +193,7 @@ void Game::initGame()
 
 	generateBricks();
 
+	world->updateKeys();
 	paused = false;
 }
 
@@ -243,13 +244,13 @@ void Game::update()
 {
 	bool step = false;
 
-	world->update(*io, render_elapsed_time);
+	world->update(render_elapsed_time);
 
-	if (io->KeysDown[GLFW_KEY_SPACE])
+	if (world->keyPressed(GLFW_KEY_SPACE, true))
 	{
 		paused = !paused;
 	}
-	if (io->KeysDown[GLFW_KEY_KP_ADD])
+	if (world->keyPressed(GLFW_KEY_KP_ADD, true))
 	{
 		step = true;
 	}
@@ -271,6 +272,8 @@ void Game::update()
 		carriage->update(*io, render_elapsed_time);
 		checkCollisions();
 	}
+
+	world->updateKeys();
 }
 
 void Game::checkCollisions()
@@ -325,5 +328,5 @@ void Game::render(ImDrawList& draw_list)
 	{
 		brick->draw(*io, draw_list);
 	}
-	world->draw(*io, draw_list);
+	world->draw(draw_list);
 }

@@ -1,10 +1,19 @@
 #include "engine/game_world.h"
 #include <string>
 
-GameWorld::GameWorld(Vect size)
+bool GameWorld::keyPressed(uint32_t key, bool once)
+{
+	bool key_down = io.KeysDown[key];
+	if (once)
+		key_down &= key_down != oldKeysDown[key];
+	return key_down;
+}
+
+GameWorld::GameWorld(ImGuiIO& io, Vect size) : io(io)
 {
 	this->size = size;
 	lifes = MAX_LIFES;
+	memset(oldKeysDown, 0, sizeof(oldKeysDown[0]));
 }
 
 Vect GameWorld::getSize()
@@ -27,12 +36,17 @@ uint32_t GameWorld::getLifes() const
 	return lifes;
 }
 
-void GameWorld::update(ImGuiIO& io, float elapsed)
+void GameWorld::update(float elapsed)
 {
 	coords_to_screen = Vect(io.DisplaySize.x / size.x, io.DisplaySize.y / size.y);
 }
 
-void GameWorld::draw(ImGuiIO& io, ImDrawList& draw_list)
+void GameWorld::updateKeys()
+{
+	memcpy(oldKeysDown, io.KeysDown, sizeof(oldKeysDown));
+}
+
+void GameWorld::draw(ImDrawList& draw_list)
 {
 	ImVec2 textPos(0, 0);
 	ImU32 textColor = ImGui::ColorConvertFloat4ToU32(ImVec4(1.0f, 1.0f, 1.0f, 1.0f));

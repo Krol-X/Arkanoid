@@ -14,10 +14,10 @@ void Carriage::update(ImGuiIO& io, float elapsed)
     constexpr float MIN_VELOCITY = 0.f;
     constexpr float MAX_VELOCITY = 220.0f;
 
-    if (io.KeysDown[GLFW_KEY_A] || io.KeysDown[GLFW_KEY_LEFT]) {
+    if (world.keyPressed(GLFW_KEY_A) || world.keyPressed(GLFW_KEY_LEFT)) {
         velocity.x -= 15.0f;
     }
-    else if (io.KeysDown[GLFW_KEY_D] || io.KeysDown[GLFW_KEY_RIGHT]) {
+    else if (world.keyPressed(GLFW_KEY_D) || world.keyPressed(GLFW_KEY_RIGHT)) {
         velocity.x += 15.0f;
     }
     else {
