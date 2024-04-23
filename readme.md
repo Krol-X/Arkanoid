@@ -13,6 +13,11 @@
   - [x] Base
   - [ ] More structured
 
+## Screenshots
+
+### Windows
+![Windows screenshot](https://github.com/Krol-X/Arkanoid/raw/main/doc/screenshots/windows.jpg)
+
 ## Keys
 
 - [A][B] or [<-][->] move carriage
