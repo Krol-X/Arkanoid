@@ -92,7 +92,16 @@ bool Ball::update(ImGuiIO& io, float elapsed)
 
 void Ball::draw(ImGuiIO& io, ImDrawList& draw_list)
 {
+	float lifeRatio = (float)world.getLifes() / (float)(world.MAX_LIFES + 2);
+	const ImColor baseColor = ImColor(255, 255, 0);
+
+	ImColor color = ImColor(
+		baseColor.Value.x * lifeRatio,
+		baseColor.Value.y * lifeRatio,
+		baseColor.Value.z * lifeRatio
+	);
+
 	Vect p_min = world.toScreenCoords(position - half_size);
 	Vect p_max = world.toScreenCoords(position + half_size);
-	draw_list.AddRectFilled(p_min, p_max, ImColor(255, 150, 50));
+	draw_list.AddRectFilled(p_min, p_max, color);
 }

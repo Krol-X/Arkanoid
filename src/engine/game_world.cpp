@@ -4,6 +4,7 @@
 GameWorld::GameWorld(Vect size)
 {
 	this->size = size;
+	lifes = MAX_LIFES;
 }
 
 Vect GameWorld::getSize()

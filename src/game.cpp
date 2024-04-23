@@ -1,6 +1,7 @@
 #include "game.h"
 
-#include <stdio.h>
+#include <cstdio>
+#include <ctime>
 
 #include "imgui_internal.h"
 #include "imgui_impl_glfw.h"
@@ -163,15 +164,24 @@ void Game::initAudio()
 	}
 	wall_sound = soundEngine->addSoundSourceFromFile("wall.wav", irrklang::ESM_AUTO_DETECT, true);
 	brick_sound = soundEngine->addSoundSourceFromFile("brick.wav", irrklang::ESM_AUTO_DETECT, true);
+	die_sound = soundEngine->addSoundSourceFromFile("die.wav", irrklang::ESM_AUTO_DETECT, true);
 }
 
 void Game::initGame()
 {
+	std::srand(std::time(0));
+
+	const Vect ball_vel_min = Vect(-150.f, 150.f);
+	const Vect ball_vel_max = Vect(150.f, 200.f);
+	
 	world = new GameWorld(settings.world_size);
 	Vect world_size = world->getSize();
 
 	Vect ball_pos = Vect(world_size.x / 2.0f, world_size.y / 2.0f);
-	Vect ball_vel = Vect(150, 150);
+	float x_vel = ball_vel_min.x + fmodf((float)std::rand(), ball_vel_max.x - ball_vel_min.x + 1);
+	float y_vel = ball_vel_min.y + fmodf((float)std::rand(), ball_vel_max.y - ball_vel_min.y + 1);
+	Vect ball_vel = Vect(x_vel, y_vel);
+
 	ball = new Ball(*world, ball_pos, settings.ball_radius, ball_vel);
 
 	Vect& carriage_size = settings.carriage_size;
@@ -242,10 +252,18 @@ void Game::update()
 	}
 
 	if (!paused || step) {
+		auto old_lifes = world->getLifes();
 		if (ball->update(*io, render_elapsed_time))
 		{
-			if (wall_sound)
-				soundEngine->play2D(wall_sound);
+			if (old_lifes != world->getLifes())
+			{
+				if (die_sound)
+					soundEngine->play2D(die_sound);
+			}
+			else {
+				if (wall_sound)
+					soundEngine->play2D(wall_sound);
+			}
 		}
 		carriage->update(*io, render_elapsed_time);
 		checkCollisions();
@@ -270,10 +288,16 @@ void Game::checkCollisions()
 		if (collsion)
 		{
 			ball->handleCollision(*brick, collsion);
-			brick->handleCollision(*ball, collsion);
-			bricksToRemove.push_back(brick);
-			if (brick_sound)
-				soundEngine->play2D(brick_sound);
+			if (brick->handleCollision(*ball, collsion))
+			{
+				bricksToRemove.push_back(brick);
+				if (brick_sound)
+					soundEngine->play2D(brick_sound);
+			}
+			else {
+				if (wall_sound)
+					soundEngine->play2D(wall_sound);
+			}
 			break;
 		}
 	}

@@ -29,6 +29,7 @@ private:
 	irrklang::ISound* music;
 	irrklang::ISoundSource* wall_sound;
 	irrklang::ISoundSource* brick_sound;
+	irrklang::ISoundSource* die_sound;
 
 	bool inited = false;
 	bool paused = true;

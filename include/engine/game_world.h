@@ -11,6 +11,8 @@ private:
 	uint32_t score = 0;
 	uint32_t lifes = 3;
 public:
+	const uint32_t MAX_LIFES = 5;
+
 	GameWorld(Vect size);
 	Vect getSize();
 
