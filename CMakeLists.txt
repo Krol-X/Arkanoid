@@ -52,16 +52,15 @@ add_library(imgui STATIC
 
 # irrklang
 set(irrklang_include_dir "${irrklang_out_path}/include")
-set(irrklang_lib_dir "${irrklang_out_path}/lib")
 
 if(WIN32)
-  set(irrklang_libs 
-    "${irrklang_lib_dir}/Winx64-visualStudio/irrKlang.lib")
-  set(irrklang_bin_dir "${irrklang_out_path}/bin/winx64-visualStudio")
+  set(irrklang_libs_dir "${irrklang_out_path}/lib/Winx64-visualStudio")
+  set(irrklang_libs "${irrklang_libs_dir}/irrKlang.lib")
+  set(irrklang_bin_dir "${irrklang_out_path}/bin/Winx64-visualStudio")
 elseif(UNIX AND NOT APPLE)
-  set(irrklang_libs 
-    "${irrklang_lib_dir}/linux-gcc-64/libIrrKlang.so")
-  set(irrklang_bin_dir "${irrklang_out_path}/bin/linux-gcc-64")
+  set(irrklang_libs_dir "${irrklang_out_path}/bin/linux-gcc-64")
+  set(irrklang_libs "${irrklang_libs_dir}/libIrrKlang.so" # ${irrklang_libs_dir}/ikpMP3.so???
+)
 elseif(APPLE)
 endif()
 
@@ -101,6 +100,7 @@ target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/inc
 
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE ${irrklang_include_dir})
 target_link_libraries(${CMAKE_PROJECT_NAME} ${irrklang_libs})
+
 if(WIN32)
   file(COPY ${irrklang_bin_dir}/ikpFlac.dll
             ${irrklang_bin_dir}/ikpMP3.dll
@@ -108,4 +108,4 @@ if(WIN32)
        DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
   target_link_options(${CMAKE_PROJECT_NAME} PRIVATE "/SUBSYSTEM:WINDOWS")
-endif()
+endif() 
