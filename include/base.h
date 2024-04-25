@@ -1,5 +1,6 @@
 #pragma once
 
+#define _USE_MATH_DEFINES
 #include <mathfu/rect.h>
 #include <mathfu/vector.h>
 
@@ -12,3 +13,4 @@ using Vect = mathfu::Vector<float, 2>;
 
 #include <imgui.h>
 #include <vector>
+#include <cmath>

@@ -1,46 +1,51 @@
 #pragma once
 
 #include "base.h"
-#include "imgui_impl_glfw.h"
-#include "game_world.h"
-#include <vector>
 
-enum CollisionSide
+namespace Game { class State; }
+
+namespace Engine
 {
-    NONE,
-    LEFT_SIDE,
-    RIGHT_SIDE,
-    TOP_SIDE,
-    BOTTOM_SIDE,
-    CORNER
-};
+    using Game::State;
 
-class GameObject
-{
-public:
-    GameObject(GameWorld& world, const Vect& center_position, const Vect& size)
-        : world(world), position(center_position), size(size), velocity(Vect(0.f)), half_size(size / 2.0f) {}
-    GameObject(GameWorld& world, const Vect& center_position, const Vect& size, const Vect& velocity)
-        : world(world), position(center_position), size(size), velocity(velocity), half_size(size / 2.0f) {}
-    virtual ~GameObject() = default;
+    enum CollisionSide
+    {
+        NONE,
+        LEFT_SIDE,
+        RIGHT_SIDE,
+        TOP_SIDE,
+        BOTTOM_SIDE,
+        CORNER
+    };
 
-    const Vect& getPosition() const;
-    const Vect& getSize() const;
-    const Vect& getHalfSize() const;
-    const Vect& getVelocity() const;
-    float getBounceFactor() const;
+    class GameObject
+    {
+    public:
+        GameObject(State& state, int type, Vect center_position, Vect size);
+        GameObject(State& state, int type, Vect center_position, Vect size, Vect velocity);
+        virtual ~GameObject() = default;
 
-    CollisionSide getCollisionVector(GameObject& object) const;
-    bool handleCollision(GameObject& object, CollisionSide side);
+        const int getType() const;
+        const Vect& getPosition() const;
+        const Vect& getSize() const;
+        const Vect& getHalfSize() const;
+        const Vect& getVelocity() const;
+        float getBounce—oefficient() const;
 
-    bool update(const ImGuiIO& io, float elapsed);
-    void draw(ImGuiIO& io, ImDrawList& draw_list);
+        CollisionSide getCollisionVector(GameObject& object) const;
+        void handleCollision(GameObject& object, CollisionSide side);
 
-protected:
-    GameWorld& world;
-    Vect position;
-    Vect size;
-    Vect velocity;
-    Vect half_size;
-    float bounce_factor = 1;
-};
+        void update(float elapsed);
+        void draw(ImDrawList& draw_list);
+    protected:
+        State& state;
+        int type;
+        Vect position;
+        Vect size;
+        Vect velocity;
+        Vect half_size;
+        float bounce_coefficient;
+    };
+}
+
+#include "game/state.h"

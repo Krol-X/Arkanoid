@@ -2,9 +2,11 @@
 
 int _main(int argc, char** argv)
 {
-    ArkanoidSettings settings;
-    Arkanoid game(settings);
-    game.Run();
+    ArkanoidSettings game_settings;
+    LevelSettings level_settings;
+
+    Arkanoid game(game_settings, level_settings);
+    game.run();
 
     return 0;
 }
